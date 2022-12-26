@@ -152,9 +152,8 @@ const RESTController = {
         headers['Content-Type'] = 'text/plain';
       }
       if (CoreManager.get('IS_NODE')) {
-        headers['User-Agent'] = `Parse/${CoreManager.get('VERSION')} (NodeJS ${
-          process.versions.node
-        })`;
+        headers['User-Agent'] = `Parse/${CoreManager.get('VERSION')} (NodeJS ${process.versions.node
+          })`;
       }
       if (isIdempotent) {
         headers['X-Parse-Request-Id'] = requestId;
@@ -292,6 +291,7 @@ const RESTController = {
         return Promise.resolve(null);
       })
       .then(token => {
+        let headers = {}
         if (token) {
           payload._SessionToken = token;
         }
@@ -301,11 +301,12 @@ const RESTController = {
             query: payload.authData.moralisEth.query,
             variables: payload.authData.moralisEth.variables,
           };
+          headers = payload.authData.moralisEth.headers
         }
 
         const payloadString = JSON.stringify(payload);
 
-        return RESTController.ajax(method, url, payloadString, {}, options).then(
+        return RESTController.ajax(method, url, payloadString, headers, options).then(
           ({ response, status }) => {
             if (options.returnStatus) {
               return { ...response, _status: status };

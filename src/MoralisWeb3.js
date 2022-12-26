@@ -141,6 +141,7 @@ class MoralisWeb3 {
       networkType: 'evm',
       operationName: options?.operationName,
       query: options?.query,
+      headers: options?.headers,
     };
     const user = await ParseUser.logInWith('moralisEth', { authData });
     await user.setACL(new ParseACL(user));
@@ -438,8 +439,8 @@ class MoralisWeb3 {
     const response = isReadFunction
       ? await customFunction(...Object.values(parsedInputs)).call()
       : await customFunction(...Object.values(parsedInputs)).send(
-          msgValue ? { value: msgValue } : null
-        );
+        msgValue ? { value: msgValue } : null
+      );
 
     return response;
   }

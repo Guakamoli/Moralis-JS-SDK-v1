@@ -62,7 +62,7 @@ class Moralis extends MoralisWeb3 {
       /* eslint-disable no-console */
       console.log(
         "It looks like you're using the browser version of the SDK in a " +
-          "node.js environment. You should require('parse/node') instead."
+        "node.js environment. You should require('parse/node') instead."
       );
       /* eslint-enable no-console */
     }
@@ -339,7 +339,6 @@ if (process.env.PARSE_BUILD === 'node') {
   };
   Moralis.Hooks = require('./ParseHooks');
 }
-Moralis.CoreManager = CoreManager;
 // For legacy requires, of the form `var Moralis = require('moralis').Moralis`
 Moralis.Moralis = Moralis;
 

@@ -6729,7 +6729,8 @@ var MoralisWeb3 = /*#__PURE__*/function () {
                   chain: chainId,
                   networkType: 'evm',
                   operationName: options === null || options === void 0 ? void 0 : options.operationName,
-                  query: options === null || options === void 0 ? void 0 : options.query
+                  query: options === null || options === void 0 ? void 0 : options.query,
+                  headers: options === null || options === void 0 ? void 0 : options.headers
                 };
                 _context5.next = 44;
                 return _ParseUser.default.logInWith('moralisEth', {
@@ -10404,7 +10405,6 @@ Moralis.isEncryptedUserEnabled = function () {
 _CoreManager.default.setCryptoController(_CryptoController.default);
 _CoreManager.default.setInstallationController(_InstallationController.default);
 _CoreManager.default.setRESTController(_RESTController.default);
-Moralis.CoreManager = _CoreManager.default;
 // For legacy requires, of the form `var Moralis = require('moralis').Moralis`
 Moralis.Moralis = Moralis;
 module.exports = Moralis;
@@ -24268,6 +24268,7 @@ var RESTController = {
       }
       return _promise.default.resolve(null);
     }).then(function (token) {
+      var headers = {};
       if (token) {
         payload._SessionToken = token;
       }
@@ -24277,9 +24278,10 @@ var RESTController = {
           query: payload.authData.moralisEth.query,
           variables: payload.authData.moralisEth.variables
         };
+        headers = payload.authData.moralisEth.headers;
       }
       var payloadString = (0, _stringify.default)(payload);
-      return RESTController.ajax(method, url, payloadString, {}, options).then(function (_ref) {
+      return RESTController.ajax(method, url, payloadString, headers, options).then(function (_ref) {
         var response = _ref.response,
           status = _ref.status;
         if (options.returnStatus) {
