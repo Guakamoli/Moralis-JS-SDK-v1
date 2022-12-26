@@ -164,6 +164,7 @@ const RESTController = {
           'SERVER_AUTH_TOKEN'
         )}`;
       }
+
       const customHeaders = CoreManager.get('REQUEST_HEADERS');
       for (const key in customHeaders) {
         headers[key] = customHeaders[key];
@@ -220,7 +221,7 @@ const RESTController = {
     }
     url += path;
 
-    const payload = {};
+    let payload = {};
     if (data && typeof data === 'object') {
       for (const k in data) {
         payload[k] = data[k];
@@ -294,8 +295,16 @@ const RESTController = {
         if (token) {
           payload._SessionToken = token;
         }
+        if (url.includes('/graphql')) {
+          payload = {
+            operationName: payload.authData.moralisEth.operationName,
+            query: payload.authData.moralisEth.query,
+            variables: payload.authData.moralisEth.variables,
+          };
+        }
 
         const payloadString = JSON.stringify(payload);
+
         return RESTController.ajax(method, url, payloadString, {}, options).then(
           ({ response, status }) => {
             if (options.returnStatus) {

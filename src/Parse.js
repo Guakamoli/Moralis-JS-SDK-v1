@@ -339,7 +339,7 @@ if (process.env.PARSE_BUILD === 'node') {
   };
   Moralis.Hooks = require('./ParseHooks');
 }
-
+Moralis.CoreManager = CoreManager;
 // For legacy requires, of the form `var Moralis = require('moralis').Moralis`
 Moralis.Moralis = Moralis;
 

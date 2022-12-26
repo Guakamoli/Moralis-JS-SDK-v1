@@ -51,32 +51,44 @@ class Web3Api {
 
   static account = {
     getTransactions: async (options = {}) => Web3Api.apiCall('getTransactions', options),
+    getTransactionsVerbose: async (options = {}) => Web3Api.apiCall('getTransactionsVerbose', options),
     getNativeBalance: async (options = {}) => Web3Api.apiCall('getNativeBalance', options),
     getTokenBalances: async (options = {}) => Web3Api.apiCall('getTokenBalances', options),
     getTokenTransfers: async (options = {}) => Web3Api.apiCall('getTokenTransfers', options),
     getNFTs: async (options = {}) => Web3Api.apiCall('getNFTs', options),
     getNFTTransfers: async (options = {}) => Web3Api.apiCall('getNFTTransfers', options),
+    getWalletNFTCollections: async (options = {}) => Web3Api.apiCall('getWalletNFTCollections', options),
     getNFTsForContract: async (options = {}) => Web3Api.apiCall('getNFTsForContract', options),
   }
 
   static token = {
     getTokenMetadata: async (options = {}) => Web3Api.apiCall('getTokenMetadata', options),
+    getNFTTrades: async (options = {}) => Web3Api.apiCall('getNFTTrades', options),
+    getNFTLowestPrice: async (options = {}) => Web3Api.apiCall('getNFTLowestPrice', options),
     getTokenMetadataBySymbol: async (options = {}) => Web3Api.apiCall('getTokenMetadataBySymbol', options),
     getTokenPrice: async (options = {}) => Web3Api.apiCall('getTokenPrice', options),
-    getTokenAdressTransfers: async (options = {}) => Web3Api.apiCall('getTokenAdressTransfers', options),
+    getTokenAddressTransfers: async (options = {}) => Web3Api.apiCall('getTokenAddressTransfers', options),
     getTokenAllowance: async (options = {}) => Web3Api.apiCall('getTokenAllowance', options),
     searchNFTs: async (options = {}) => Web3Api.apiCall('searchNFTs', options),
+    getNftTransfersFromToBlock: async (options = {}) => Web3Api.apiCall('getNftTransfersFromToBlock', options),
     getAllTokenIds: async (options = {}) => Web3Api.apiCall('getAllTokenIds', options),
+    getMultipleNFTs: async (options = {}) => Web3Api.apiCall('getMultipleNFTs', options),
     getContractNFTTransfers: async (options = {}) => Web3Api.apiCall('getContractNFTTransfers', options),
     getNFTOwners: async (options = {}) => Web3Api.apiCall('getNFTOwners', options),
     getNFTMetadata: async (options = {}) => Web3Api.apiCall('getNFTMetadata', options),
+    reSyncMetadata: async (options = {}) => Web3Api.apiCall('reSyncMetadata', options),
     getTokenIdMetadata: async (options = {}) => Web3Api.apiCall('getTokenIdMetadata', options),
     getTokenIdOwners: async (options = {}) => Web3Api.apiCall('getTokenIdOwners', options),
     getWalletTokenIdTransfers: async (options = {}) => Web3Api.apiCall('getWalletTokenIdTransfers', options),
   }
 
+  static contract = {
+    syncNFTContract: async (options = {}) => Web3Api.apiCall('syncNFTContract', options),
+  }
+
   static resolve = {
     resolveDomain: async (options = {}) => Web3Api.apiCall('resolveDomain', options),
+    resolveAddress: async (options = {}) => Web3Api.apiCall('resolveAddress', options),
   }
 
   static defi = {
@@ -86,6 +98,11 @@ class Web3Api {
 
   static storage = {
     uploadFolder: async (options = {}) => Web3Api.apiCall('uploadFolder', options),
+  }
+
+  static info = {
+    web3ApiVersion: async (options = {}) => Web3Api.apiCall('web3ApiVersion', options),
+    endpointWeights: async (options = {}) => Web3Api.apiCall('endpointWeights', options),
   }
 }
 

@@ -111,15 +111,37 @@ class MoralisWeb3 {
     }
 
     const web3 = await this._enable(options);
-    const message = options?.signingMessage || MoralisWeb3.getSigningData();
-    const data = await createSigningData(message);
+    let message = options?.signingMessage || MoralisWeb3.getSigningData();
     const accounts = await web3.eth.getAccounts();
     const accountsLower = accounts.map(v => v.toLowerCase());
     const [ethAddress] = accountsLower;
+    const chainId = await this.getChainId();
+    if (options?.messageFetcher) {
+      message = await options.messageFetcher({
+        address: accountsLower[0],
+        chain: parseInt(chainId, 10),
+        networkType: 'evm',
+      });
+    }
+    if (!message) throw new Error('Message not found');
+    const data = await createSigningData(message);
+
     if (!ethAddress) throw new Error('Address not found');
     const signature = await web3.eth.personal.sign(data, ethAddress, '');
+
     if (!signature) throw new Error('Data not signed');
-    const authData = { id: ethAddress, signature, data };
+    const variables = { signature, data, networkType: 'evm' };
+
+    const authData = {
+      variables,
+      address: ethAddress,
+      signature,
+      data,
+      chain: chainId,
+      networkType: 'evm',
+      operationName: options?.operationName,
+      query: options?.query,
+    };
     const user = await ParseUser.logInWith('moralisEth', { authData });
     await user.setACL(new ParseACL(user));
     if (!user) throw new Error('Could not get user');

@@ -5,69 +5,77 @@
 
 export interface paths {
   "/block/{block_number_or_hash}": {
-    /** Gets the contents of a block by block hash */
+    /** Get the contents of a block by block hash. */
     get: operations["getBlock"];
   };
   "/dateToBlock": {
-    /** Gets the closest block of the provided date */
+    /** Get the closest block of the provided date. */
     get: operations["getDateToBlock"];
   };
   "/{address}/logs": {
-    /** Gets the logs from an address */
+    /** Get the logs for an address. */
     get: operations["getLogsByAddress"];
   };
   "/block/{block_number_or_hash}/nft/transfers": {
-    /** Gets NFT transfers by block number or block hash */
+    /** Get NFT transfers by block number or block hash. */
     get: operations["getNFTTransfersByBlock"];
   };
   "/transaction/{transaction_hash}": {
-    /** Gets the contents of a block transaction by hash */
+    /** Get the contents of a transaction by transaction hash. */
     get: operations["getTransaction"];
   };
   "/{address}/events": {
-    /** Gets events in descending order based on block number */
+    /** Get events for a specific contract ordered by block number in descending order. */
     post: operations["getContractEvents"];
   };
   "/{address}/function": {
-    /** Runs a given function of a contract abi and returns readonly data */
+    /** Run a given function of a contract abi and retrieve readonly data. */
     post: operations["runContractFunction"];
   };
   "/{address}": {
-    /** Gets native transactions in descending order based on block number */
+    /** Get native transactions ordered by block number in descending order. */
     get: operations["getTransactions"];
   };
+  "/{address}/verbose": {
+    /** Get native transactions ordered by block number in descending order. */
+    get: operations["getTransactionsVerbose"];
+  };
   "/{address}/balance": {
-    /** Gets native balance for a specific address */
+    /** Get native balance for a specific address. */
     get: operations["getNativeBalance"];
   };
   "/{address}/erc20": {
-    /** Gets token balances for a specific address */
+    /** Get token balances for a specific address. */
     get: operations["getTokenBalances"];
   };
   "/{address}/erc20/transfers": {
-    /** Gets ERC20 token transactions in descending order based on block number */
+    /** Get ERC20 token transactions ordered by block number in descending order. */
     get: operations["getTokenTransfers"];
   };
   "/{address}/nft": {
     /**
-     * Gets NFTs owned by the given address
+     * Get NFTs owned by a given address.
      * * The response will include status [SYNCED/SYNCING] based on the contracts being indexed.
      * * Use the token_address param to get results for a specific contract only
      * * Note results will include all indexed NFTs
-     * * Any request which includes the token_address param will start the indexing process for that NFT collection the very first time it is requested
+     * * Any request which includes the token_address param will start the indexing process for that NFT collection the very first time it is requested.
      */
     get: operations["getNFTs"];
   };
   "/{address}/nft/transfers": {
-    /** Gets the transfers of the tokens matching the given parameters */
+    /** Get the transfers of the tokens matching the given parameters. */
     get: operations["getNFTTransfers"];
+  };
+  "/{address}/nft/collections": {
+    /** Get the nft collections owned by an user */
+    get: operations["getWalletNFTCollections"];
   };
   "/{address}/nft/{token_address}": {
     /**
-     * Gets NFTs owned by the given address
+     * Get NFTs owned by the given address for a specific NFT contract address.
      * * Use the token_address param to get results for a specific contract only
      * * Note results will include all indexed NFTs
-     * * Any request which includes the token_address param will start the indexing process for that NFT collection the very first time it is requested
+     * * Any request which includes the token_address param will start the indexing process for that NFT collection the very first time it is requested.
      */
     get: operations["getNFTsForContract"];
   };
@@ -75,301 +83,725 @@ export interface paths {
     /** Returns metadata (name, symbol, decimals, logo) for a given token contract address. */
     get: operations["getTokenMetadata"];
   };
+  "/nft/{address}/trades": {
+    /** Get the nft trades for a given contract and marketplace. */
+    get: operations["getNFTTrades"];
+  };
+  "/nft/{address}/lowestprice": {
+    /** Get the lowest executed price for an NFT token contract for the last x days (only trades paid in ETH). */
+    get: operations["getNFTLowestPrice"];
+  };
   "/erc20/metadata/symbols": {
-    /** Returns metadata (name, symbol, decimals, logo) for a given token contract address. */
+    /** Get metadata (name, symbol, decimals, logo) for a list of token symbols. */
     get: operations["getTokenMetadataBySymbol"];
   };
   "/erc20/{address}/price": {
-    /** Returns the price nominated in the native token and usd for a given token contract address. */
+    /** Get the token price denominated in the blockchains native token and USD. */
     get: operations["getTokenPrice"];
   };
   "/erc20/{address}/transfers": {
-    /** Gets ERC20 token contract transactions in descending order based on block number */
-    get: operations["getTokenAdressTransfers"];
+    /** Get ERC20 token transactions ordered by block number in descending order. */
+    get: operations["getTokenAddressTransfers"];
   };
   "/erc20/{address}/allowance": {
-    /** Gets the amount which the spender is allowed to withdraw from the spender */
+    /** Get the amount which the spender is allowed to withdraw on behalf of the owner. */
     get: operations["getTokenAllowance"];
   };
   "/nft/search": {
-    /** Gets NFTs that match a given metadata search. */
+    /** Get NFTs that match a given metadata search query. */
     get: operations["searchNFTs"];
+  };
+  "/nft/transfers": {
+    /** Gets the transfers of the tokens from a block number to a block number. */
+    get: operations["getNftTransfersFromToBlock"];
   };
   "/nft/{address}": {
     /**
-     * Gets data, including metadata (where available), for all token ids for the given contract address.
-     * * Results are sorted by the block the token id was minted (descending) and limited to 100 per page by default
-     * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection
+     * Get all NFTs, including metadata (where available), for all NFTs for the given contract address.
+     * * Results are limited to 100 per page by default
+     * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection.
      */
     get: operations["getAllTokenIds"];
   };
+  "/nft/getMultipleNFTs": {
+    /** Returns an array of NFTs specified in the request */
+    post: operations["getMultipleNFTs"];
+  };
   "/nft/{address}/transfers": {
-    /** Gets the transfers of the tokens matching the given parameters */
+    /** Get the transfers of the tokens matching the given parameters. */
     get: operations["getContractNFTTransfers"];
   };
   "/nft/{address}/owners": {
     /**
-     * Gets all owners of NFT items within a given contract collection
-     * * Use after /nft/contract/{token_address} to find out who owns each token id in a collection
-     * * Make sure to include a sort parm on a column like block_number_minted for consistent pagination results
-     * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection
+     * Get all owners of NFTs within a given contract.
+     * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection.
      */
     get: operations["getNFTOwners"];
   };
   "/nft/{address}/metadata": {
     /**
-     * Gets the contract level metadata (name, symbol, base token uri) for the given contract
+     * Get the contract level metadata (name, symbol, base token uri) for the given contract
      * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection
      */
     get: operations["getNFTMetadata"];
   };
+  "/nft/{address}/{token_id}/metadata/resync": {
+    /**
+     * ReSync the metadata for an NFT
+     * * The metadata flag will request a the NFT's metadata from the already existing token_uri
+     * * The uri(default) flag will fetch the latest token_uri from the given NFT address. In sync mode the metadata will also be fetched
+     * * The sync mode will make the endpoint synchronous so it will wait for the task to be completed before responding
+     * * The async mode(default) will make the endpoint asynchronous so we will wait for the task to be completed before responding
+     */
+    get: operations["reSyncMetadata"];
+  };
+  "/nft/{address}/sync": {
+    /** Initiates a sync of a previously non synced Contract. */
+    put: operations["syncNFTContract"];
+  };
   "/nft/{address}/{token_id}": {
     /**
-     * Gets data, including metadata (where available), for the given token id of the given contract address.
+     * Get NFT data, including metadata (where available), for the given NFT token id of the given contract address.
      * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection
      */
     get: operations["getTokenIdMetadata"];
   };
   "/nft/{address}/{token_id}/owners": {
     /**
-     * Gets all owners of NFT items within a given contract collection
-     * * Use after /nft/contract/{token_address} to find out who owns each token id in a collection
-     * * Make sure to include a sort parm on a column like block_number_minted for consistent pagination results
+     * Get all owners of a specific NFT given the contract address and token ID.
      * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection
      */
     get: operations["getTokenIdOwners"];
   };
   "/nft/{address}/{token_id}/transfers": {
-    /** Gets the transfers of the tokens matching the given parameters */
+    /** Get the transfers of an NFT given a conttract address and token ID. */
     get: operations["getWalletTokenIdTransfers"];
   };
   "/resolve/{domain}": {
-    /** Resolves an Unstoppable domain and returns the address */
+    /** Resolve an Unstoppable domain and get the address. */
     get: operations["resolveDomain"];
   };
+  "/resolve/{address}/reverse": {
+    /** Resolve an ETH address and find the ENS name. */
+    get: operations["resolveAddress"];
+  };
   "/{pair_address}/reserves": {
-    /** Get the liquidity reserves for a given pair address */
+    /** Get the liquidity reserves for a given pair address. Only Uniswap V2 based exchanges supported at the moment. */
     get: operations["getPairReserves"];
   };
   "/{token0_address}/{token1_address}/pairAddress": {
     /**
-     * Fetches and returns pair data of the provided token0+token1 combination.
+     * Fetch the pair data of the provided token0+token1 combination.
      * The token0 and token1 options are interchangable (ie. there is no different outcome in "token0=WETH and token1=USDT" or "token0=USDT and token1=WETH")
      */
     get: operations["getPairAddress"];
   };
   "/ipfs/uploadFolder": {
-    /** Uploads multiple files and place them in a folder directory */
+    /** Upload multiple files to IPFS and place them in a folder directory. */
     post: operations["uploadFolder"];
+  };
+  "/web3/version": {
+    get: operations["web3ApiVersion"];
+  };
+  "/info/endpointWeights": {
+    get: operations["endpointWeights"];
   };
 }
 
 export interface components {
   schemas: {
+    logCollection: {
+      /**
+       * @description The total number of matches for this query
+       * @example 100
+       */
+      total?: number;
+      /**
+       * @description The page of the current result
+       * @example 1
+       */
+      page?: number;
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
+      page_size?: number;
+      /** @description The cursor to get to the next page */
+      cursor?: string;
+      result?: components["schemas"]["logEventByAddress"][];
+    };
     logEventByAddress: {
-      /** The transaction hash */
+      /**
+       * @description The transaction hash
+       * @example 0x2d30ca6f024dbc1307ac8a1a44ca27de6f797ec22ef20627a1307243b0ab7d09
+       */
       transaction_hash: string;
-      /** The address of the contract */
+      /**
+       * @description The address of the contract
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
       address: string;
-      /** The block timestamp */
+      /**
+       * @description The block timestamp
+       * @example 2021-04-02T10:07:54.000Z
+       */
       block_timestamp: string;
-      /** The block number */
+      /**
+       * @description The block number
+       * @example 12526958
+       */
       block_number: string;
-      /** The block hash */
+      /**
+       * @description The block hash
+       * @example 0x0372c302e3c52e8f2e15d155e2c545e6d802e479236564af052759253b20fd86
+       */
       block_hash: string;
-      /** The data of the log */
+      /**
+       * @description The data of the log
+       * @example 0x00000000000000000000000000000000000000000000000de05239bccd4d537400000000000000000000000000024dbc80a9f80e3d5fc0a0ee30e2693781a443
+       */
       data: string;
+      /** @example 0x2caecd17d02f56fa897705dcc740da2d237c373f70686f4e0d9bd3bf0400ea7a */
       topic0: string;
+      /** @example 0x000000000000000000000000031002d15b0d0cd7c9129d6f644446368deae391 */
       topic1: string;
+      /** @example 0x000000000000000000000000d25943be09f968ba740e0782a34e710100defae9 */
       topic2: string;
       topic3: string;
+      /**
+       * @description The Transaction index of the log within the block
+       * @example 12
+       */
+      transaction_index: number;
+      /**
+       * @description The log index of the log within the block
+       * @example 15
+       */
+      log_index: number;
     };
     logEvent: {
-      /** The transaction hash */
+      /**
+       * @description The transaction hash
+       * @example 0x2d30ca6f024dbc1307ac8a1a44ca27de6f797ec22ef20627a1307243b0ab7d09
+       */
       transaction_hash: string;
-      /** The address of the contract */
+      /**
+       * @description The address of the contract
+       * @example 0x18F97EF6B2cbac5CA85b375b7093C4A207340d06
+       */
       address: string;
-      /** The block timestamp */
+      /**
+       * @description The block timestamp
+       * @example 2021-04-02T10:07:54.000Z
+       */
       block_timestamp: string;
-      /** The block number */
+      /**
+       * @description The block number
+       * @example 12526958
+       */
       block_number: string;
-      /** The block hash */
+      /**
+       * @description The block hash
+       * @example 0x0372c302e3c52e8f2e15d155e2c545e6d802e479236564af052759253b20fd86
+       */
       block_hash: string;
-      /** The content of the event */
-      data: { [key: string]: unknown };
+      /** @description The content of the event */
+      data: {
+        /** @example 0x54ff6974c715956a5049a123408bff91fbe29f01 */
+        from?: string;
+        /** @example 0x74de5d4fcbf63e00296fd95d33236b9794016631 */
+        to?: string;
+        /** @example 260103496340000000000 */
+        value?: string;
+      };
     };
     log: {
+      /** @example 273 */
       log_index: string;
-      /** The hash of the transaction */
+      /**
+       * @description The hash of the transaction
+       * @example 0xdd9006489e46670e0e85d1fb88823099e7f596b08aeaac023e9da0851f26fdd5
+       */
       transaction_hash: string;
+      /** @example 204 */
       transaction_index: string;
-      /** The address of the contract */
+      /**
+       * @description The address of the contract
+       * @example 0x3105d328c66d8d55092358cf595d54608178e9b5
+       */
       address: string;
-      /** The data of the log */
+      /**
+       * @description The data of the log
+       * @example 0x00000000000000000000000000000000000000000000000de05239bccd4d537400000000000000000000000000024dbc80a9f80e3d5fc0a0ee30e2693781a443
+       */
       data: string;
+      /** @example 0x2caecd17d02f56fa897705dcc740da2d237c373f70686f4e0d9bd3bf0400ea7a */
       topic0: string;
+      /** @example 0x000000000000000000000000031002d15b0d0cd7c9129d6f644446368deae391 */
       topic1?: string;
+      /** @example 0x000000000000000000000000d25943be09f968ba740e0782a34e710100defae9 */
       topic2?: string;
       topic3?: string;
-      /** The timestamp of the block */
+      /**
+       * @description The timestamp of the block
+       * @example 2021-05-07T11:08:35.000Z
+       */
       block_timestamp: string;
-      /** The block number */
+      /**
+       * @description The block number
+       * @example 12386788
+       */
       block_number: string;
-      /** The hash of the block */
+      /**
+       * @description The hash of the block
+       * @example 0x9b559aef7ea858608c2e554246fe4a24287e7aeeb976848df2b9a2531f4b9171
+       */
       block_hash: string;
     };
     blockTransaction: {
-      /** The hash of the transaction */
+      /**
+       * @description The hash of the transaction
+       * @example 0x1ed85b3757a6d31d01a4d6677fc52fd3911d649a0af21fe5ca3f886b153773ed
+       */
       hash: string;
-      /** The nonce */
+      /**
+       * @description The nonce
+       * @example 1848059
+       */
       nonce: string;
+      /** @example 108 */
       transaction_index: string;
-      /** The from address */
+      /**
+       * @description The from address
+       * @example 0x267be1c1d684f78cb4f6a176c4911b741e4ffdc0
+       */
       from_address: string;
-      /** The to address */
+      /**
+       * @description The to address
+       * @example 0x003dde3494f30d861d063232c6a8c04394b686ff
+       */
       to_address: string;
-      /** The value sent */
+      /**
+       * @description The value sent
+       * @example 115580000000000000
+       */
       value: string;
+      /** @example 30000 */
       gas?: string;
-      /** The gas price */
+      /**
+       * @description The gas price
+       * @example 52500000000
+       */
       gas_price: string;
+      /** @example 0x */
       input: string;
+      /** @example 4923073 */
       receipt_cumulative_gas_used: string;
+      /** @example 21000 */
       receipt_gas_used: string;
       receipt_contract_address?: string;
       receipt_root?: string;
+      /** @example 1 */
       receipt_status: string;
-      /** The block timestamp */
+      /**
+       * @description The block timestamp
+       * @example 2021-05-07T11:08:35.000Z
+       */
       block_timestamp: string;
-      /** The block number */
+      /**
+       * @description The block number
+       * @example 12386788
+       */
       block_number: string;
-      /** The hash of the block */
+      /**
+       * @description The hash of the block
+       * @example 0x9b559aef7ea858608c2e554246fe4a24287e7aeeb976848df2b9a2531f4b9171
+       */
       block_hash: string;
-      /** The logs of the transaction */
+      /** @description The logs of the transaction */
       logs: components["schemas"]["log"][];
     };
     block: {
-      /** The block timestamp */
+      /**
+       * @description The block timestamp
+       * @example 2021-05-07T11:08:35.000Z
+       */
       timestamp: string;
-      /** The block number */
+      /**
+       * @description The block number
+       * @example 12386788
+       */
       number: string;
-      /** The block hash */
+      /**
+       * @description The block hash
+       * @example 0x9b559aef7ea858608c2e554246fe4a24287e7aeeb976848df2b9a2531f4b9171
+       */
       hash: string;
-      /** The block hash of the parent block */
+      /**
+       * @description The block hash of the parent block
+       * @example 0x011d1fc45839de975cc55d758943f9f1d204f80a90eb631f3bf064b80d53e045
+       */
       parent_hash: string;
-      /** The nonce */
+      /**
+       * @description The nonce
+       * @example 0xedeb2d8fd2b2bdec
+       */
       nonce: string;
+      /** @example 0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347 */
       sha3_uncles: string;
+      /** @example 0xdde5fc46c5d8bcbd58207bc9f267bf43298e23791a326ff02661e99790da9996b3e0dd912c0b8202d389d282c56e4d11eb2dec4898a32b6b165f1f4cae6aa0079498eab50293f3b8defbf6af11bb75f0408a563ddfc26a3323d1ff5f9849e95d5f034d88a757ddea032c75c00708c9ff34d2207f997cc7d93fd1fa160a6bfaf62a54e31f9fe67ab95752106ba9d185bfdc9b6dc3e17427f844ee74e5c09b17b83ad6e8fc7360f5c7c3e4e1939e77a6374bee57d1fa6b2322b11ad56ad0398302de9b26d6fbfe414aa416bff141fad9d4af6aea19322e47595e342cd377403f417dfd396ab5f151095a5535f51cbc34a40ce9648927b7d1d72ab9daf253e31daf */
       logs_bloom: string;
+      /** @example 0xe4c7bf3aff7ad07f9e80d57f7189f0252592fee6321c2a9bd9b09b6ce0690d27 */
       transactions_root: string;
+      /** @example 0x49e3bfe7b618e27fde8fa08884803a8458b502c6534af69873a3cc926a7c724b */
       state_root: string;
+      /** @example 0x7cf43d7e837284f036cf92c56973f5e27bdd253ca46168fa195a6b07fa719f23 */
       receipts_root: string;
-      /** The address of the miner */
+      /**
+       * @description The address of the miner
+       * @example 0xea674fdde714fd979de3edf0f56aa9716b898ec8
+       */
       miner: string;
-      /** The difficulty of the block */
+      /**
+       * @description The difficulty of the block
+       * @example 7253857437305950
+       */
       difficulty: string;
-      /** The total difficulty */
+      /**
+       * @description The total difficulty
+       * @example 24325637817906576196890
+       */
       total_difficulty: string;
-      /** The block size */
+      /**
+       * @description The block size
+       * @example 61271
+       */
       size: string;
+      /** @example 0x65746865726d696e652d6575726f70652d7765737433 */
       extra_data: string;
-      /** The gas limit */
+      /**
+       * @description The gas limit
+       * @example 14977947
+       */
       gas_limit: string;
-      /** The gas used */
+      /**
+       * @description The gas used
+       * @example 14964688
+       */
       gas_used: string;
-      /** The number of transactions in the block */
+      /**
+       * @description The number of transactions in the block
+       * @example 252
+       */
       transaction_count: string;
-      /** The transactions in the block */
+      /** @description The transactions in the block */
       transactions: components["schemas"]["blockTransaction"][];
     };
     blockDate: {
-      /** The date of the block */
-      date: number;
-      /** The blocknumber */
+      /**
+       * @description The date of the block
+       * @example 2020-01-01T00:00:00+00:00
+       */
+      date: string;
+      /**
+       * @description The blocknumber
+       * @example 9193266
+       */
       block: number;
-      /** The timestamp of the block */
+      /**
+       * @description The timestamp of the block
+       * @example 1577836811
+       */
       timestamp: number;
+      /**
+       * @description The timestamp of the block
+       * @example 2022-01-03T22:59:39.000Z
+       */
+      block_timestamp?: number;
+      /**
+       * @description The block hash
+       * @example 0x9b559aef7ea858608c2e554246fe4a24287e7aeeb976848df2b9a2531f4b9171
+       */
+      block_hash?: string;
+      /**
+       * @description The block hash of the parent block
+       * @example 0x011d1fc45839de975cc55d758943f9f1d204f80a90eb631f3bf064b80d53e045
+       */
+      parent_hash?: string;
+    };
+    RunContractDto: {
+      /**
+       * @description The contract abi
+       * @example
+       */
+      abi: { [key: string]: unknown };
+      /**
+       * @description The params for the given function
+       * @example [object Object]
+       */
+      params?: { [key: string]: unknown };
+    };
+    tokenItem: {
+      /**
+       * @description The contract address
+       * @example 0x06012c8cf97bead5deae237070f9587f8e7a266d
+       */
+      token_address?: string;
+      /**
+       * @description The id of the token
+       * @example 100
+       */
+      token_id?: string;
+    };
+    GetMultipleNftsDto: {
+      /**
+       * @description The tokens to be fetched
+       * @example [object Object],[object Object],[object Object]
+       */
+      tokens: components["schemas"]["tokenItem"][];
+      /** @description Should normalized metadata be returned? */
+      normalizeMetadata?: boolean;
+    };
+    transactionVerboseCollection: {
+      /**
+       * @description The page of the current result
+       * @example 2
+       */
+      page?: number;
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
+      page_size?: number;
+      result?: components["schemas"]["blockTransaction"][];
     };
     transactionCollection: {
-      /** The total number of matches for this query */
+      /**
+       * @description The total number of matches for this query
+       * @example 2000
+       */
       total?: number;
-      /** The page of the current result */
+      /**
+       * @description The page of the current result
+       * @example 2
+       */
       page?: number;
-      /** The number of results per page */
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
       page_size?: number;
       result?: components["schemas"]["transaction"][];
     };
     transaction: {
-      /** The hash of the transaction */
+      /**
+       * @description The hash of the transaction
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
       hash: string;
-      /** The nonce of the transaction */
+      /**
+       * @description The nonce of the transaction
+       * @example 326595425
+       */
       nonce: string;
-      /** The transaction index */
+      /**
+       * @description The transaction index
+       * @example 25
+       */
       transaction_index: string;
-      /** The sender */
+      /**
+       * @description The sender
+       * @example 0xd4a3BebD824189481FC45363602b83C9c7e9cbDf
+       */
       from_address: string;
-      /** The recipient */
+      /**
+       * @description The recipient
+       * @example 0xa71db868318f0a0bae9411347cd4a6fa23d8d4ef
+       */
       to_address: string;
-      /** The value that was transfered (in wei) */
+      /**
+       * @description The value that was transfered (in wei)
+       * @example 650000000000000000
+       */
       value: string;
-      /** The gas of the transaction */
+      /**
+       * @description The gas of the transaction
+       * @example 6721975
+       */
       gas: string;
-      /** The gas price */
+      /**
+       * @description The gas price
+       * @example 20000000000
+       */
       gas_price: string;
-      /** The input */
+      /** @description The input */
       input: string;
-      /** The receipt cumulative gas used */
+      /**
+       * @description The receipt cumulative gas used
+       * @example 1340925
+       */
       receipt_cumulative_gas_used: string;
-      /** The receipt gas used */
+      /**
+       * @description The receipt gas used
+       * @example 1340925
+       */
       receipt_gas_used: string;
-      /** The receipt contract address */
+      /**
+       * @description The receipt contract address
+       * @example 0x1d6a4cf64b52f6c73f201839aded7379ce58059c
+       */
       receipt_contract_address: string;
-      /** The receipt root */
+      /** @description The receipt root */
       receipt_root: string;
-      /** The receipt status */
+      /**
+       * @description The receipt status
+       * @example 1
+       */
       receipt_status: string;
-      /** The block timestamp */
+      /**
+       * @description The block timestamp
+       * @example 2021-04-02T10:07:54.000Z
+       */
       block_timestamp: string;
-      /** The block number */
+      /**
+       * @description The block number
+       * @example 12526958
+       */
       block_number: string;
-      /** The block hash */
+      /**
+       * @description The block hash
+       * @example 0x0372c302e3c52e8f2e15d155e2c545e6d802e479236564af052759253b20fd86
+       */
       block_hash: string;
     };
     erc20Allowance: {
-      /** The allowance */
+      /** @description The allowance */
       allowance: string;
     };
     erc20TokenBalance: {
-      /** The address of the token contract */
+      /**
+       * @description The address of the token contract
+       * @example 0x2d30ca6f024dbc1307ac8a1a44ca27de6f797ec22ef20627a1307243b0ab7d09
+       */
       token_address: string;
-      /** The name of the token Contract */
+      /**
+       * @description The name of the token Contract
+       * @example Kylin Network
+       */
       name: string;
-      /** The symbol of the NFT contract */
+      /**
+       * @description The symbol of the NFT contract
+       * @example KYL
+       */
       symbol: string;
-      /** The logo of the token */
+      /**
+       * @description The logo of the token
+       * @example https://cdn.moralis.io/eth/0x67b6d479c7bb412c54e03dca8e1bc6740ce6b99c.png
+       */
       logo?: string;
-      /** The thumbnail of the logo */
+      /**
+       * @description The thumbnail of the logo
+       * @example https://cdn.moralis.io/eth/0x67b6d479c7bb412c54e03dca8e1bc6740ce6b99c_thumb.png
+       */
       thumbnail?: string;
-      /** The number of decimals on of the token */
-      decimals: string;
-      /** Timestamp of when the contract was last synced with the node */
+      /**
+       * @description The number of decimals on of the token
+       * @example 18
+       */
+      decimals: number;
+      /**
+       * @description Timestamp of when the contract was last synced with the node
+       * @example 123456789
+       */
       balance: string;
     };
     nativeBalance: {
-      /** The balance */
+      /**
+       * @description The balance
+       * @example 1234567890
+       */
       balance: string;
     };
+    trade: {
+      /**
+       * @description The transaction hash
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
+      transaction_hash: string;
+      /** @description The transaction index */
+      transaction_index: string;
+      /**
+       * @description The token id(s) traded
+       * @example 15,54
+       */
+      token_ids: string[];
+      /**
+       * @description The address that sold the NFT
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
+      seller_address: string;
+      /**
+       * @description The address that bought the NFT
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
+      buyer_address: string;
+      /**
+       * @description The address of the contract that traded the NFT
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
+      marketplace_address: string;
+      /**
+       * @description The value that was sent in the transaction (ETH/BNB/etc..)
+       * @example 1000000000000000
+       */
+      price: string;
+      /**
+       * @description The block timestamp
+       * @example 2021-06-04T16:00:15
+       */
+      block_timestamp: string;
+      /**
+       * @description The blocknumber of the transaction
+       * @example 13680123
+       */
+      block_number: string;
+      /**
+       * @description The block hash
+       * @example 0x4a7c916ca4a970358b9df90051008f729685ff05e9724a9dddba32630c37cb96
+       */
+      block_hash: string;
+    } & {
+      token_address: unknown;
+    };
+    tradeCollection: {
+      /**
+       * @description The total number of matches for this query
+       * @example 2000
+       */
+      total?: number;
+      /**
+       * @description The page of the current result
+       * @example 2
+       */
+      page?: number;
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
+      page_size?: number;
+      result?: components["schemas"]["trade"][];
+    };
+    /**
+     * @default eth
+     * @example eth
+     */
     chainList:
       | "eth"
       | "0x1"
-      | "ropsten"
-      | "0x3"
-      | "rinkeby"
-      | "0x4"
       | "goerli"
       | "0x5"
-      | "kovan"
-      | "0x2a"
+      | "sepolia"
+      | "0xaa36a7"
       | "polygon"
       | "0x89"
       | "mumbai"
@@ -379,282 +811,870 @@ export interface components {
       | "bsc testnet"
       | "0x61"
       | "avalanche"
-      | "0xa86a";
+      | "0xa86a"
+      | "avalanche testnet"
+      | "0xa869"
+      | "fantom"
+      | "0xfa"
+      | "palm"
+      | "0x2a15c308d"
+      | "cronos"
+      | "0x19"
+      | "cronos testnet"
+      | "0x152"
+      | "arbitrum"
+      | "0xa4b1";
     nft: {
-      /** The address of the contract of the NFT */
+      /**
+       * @description The address of the contract of the NFT
+       * @example 0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB
+       */
       token_address: string;
-      /** The token id of the NFT */
+      /**
+       * @description The token id of the NFT
+       * @example 15
+       */
       token_id: string;
-      /** The type of NFT contract standard */
+      /**
+       * @description The owner wallet address of the NFT
+       * @example 0x9c83ff0f1c8924da96cb2fcb7e093f78eb2e316b
+       */
+      owner_of?: string;
+      /**
+       * @description The token hash
+       * @example 502cee781b0fb40ea02508b21d319ced
+       */
+      token_hash?: string;
+      /**
+       * @description The block number when the amount or owner changed
+       * @example 88256
+       */
+      block_number?: string;
+      /**
+       * @description The block number when the NFT was minted
+       * @example 88256
+       */
+      block_number_minted?: string;
+      /**
+       * @description The type of NFT contract standard
+       * @example ERC721
+       */
       contract_type: string;
-      /** The uri to the metadata of the token */
+      /** @description The uri to the metadata of the token */
       token_uri?: string;
-      /** The metadata of the token */
+      /** @description The metadata of the token */
       metadata?: string;
-      /** when the metadata was last updated */
-      synced_at?: string;
-      /** The number of this item the user owns (used by ERC1155) */
+      /** @description A normalized metadata version of the NFT's metadata. */
+      normalized_metadata?: components["schemas"]["normalizedMetadata"];
+      /**
+       * @description The address that minted the NFT
+       * @example 0x9c83ff0f1c8924da96cb2fcb7e093f78eb2e316b
+       */
+      minter_address?: string;
+      /** @description When the token_uri was last updated */
+      last_token_uri_sync?: string;
+      /** @description When the metadata was last updated */
+      last_metadata_sync?: string;
+      /**
+       * @description The number of this item the user owns (used by ERC1155)
+       * @example 1
+       */
       amount?: string;
-      /** The name of the Token contract */
+      /**
+       * @description The name of the Token contract
+       * @example CryptoKitties
+       */
       name: string;
-      /** The symbol of the NFT contract */
+      /**
+       * @description The symbol of the NFT contract
+       * @example RARI
+       */
       symbol: string;
     };
     nftMetadata: {
-      /** The address of the contract of the NFT */
-      token_address: string;
-      /** The token id of the NFT */
+      /**
+       * @description The token id of the NFT
+       * @example 889
+       */
       token_id: string;
-      /** The type of NFT contract standard */
-      contract_type: string;
-      /** The uri to the metadata of the token */
+      /**
+       * @description The address of the contract of the NFT
+       * @example 0x8ce66ff0865570d1ff0bb0098fa41b4dc61e02e6
+       */
+      token_address: string;
+      /**
+       * @description The uri to the metadata of the token
+       * @example https://ipfs.moralis.io:2053/ipfs/QmZZbo8u8zEWg7wtmZhJS2W718WL6FA95T4XdgmCcLp1SJ/889.json
+       */
       token_uri: string;
-      /** The metadata of the token */
+      /**
+       * @description The metadata of the token
+       * @example {"name":"Bape #889","description":"The #1 metavestor clan (NFT/DAO) by a team with multi billion dollar company experience.","image":"https://bapesclan.mypinata.cloud/ipfs/QmTSUD5JA6qHaC5t25mcXySfz19AV9u4Mb6Na7ntQ6tEwf/889.jpg","attributes":[{"trait_type":"Background","value":"Black"},{"trait_type":"Body","value":"Man"},{"trait_type":"Dress","value":"Suit Tie Blue"},{"trait_type":"Face","value":"Pipe"},{"trait_type":"Eye","value":"Eye"}]}
+       */
       metadata: string;
-      /** when the metadata was last updated */
-      synced_at: string;
-    } & {
-      token_hash: unknown;
+      /** @example 1 */
+      is_valid: number;
+      /** @example 2 */
+      syncing: number;
+      /** @example 0 */
+      frozen: number;
+      /** @example 0 */
+      resyncing: number;
+      /**
+       * @description The type of NFT contract standard
+       * @example ERC721
+       */
+      contract_type: string;
+      /** @example fffa3102469ce77f569893d16d5884f9 */
+      token_hash: string;
+      /** @example fd995c8a-f8b2-40cb-a407-f43e552638b4 */
+      batch_id: string;
+      /** @example Bape #889 */
+      metadata_name: string;
+      /** @example The #1 metavestor clan (NFT/DAO) by a team with multi billion dollar company experience. */
+      metadata_description: string;
+      /** @example [{"trait_type":"Background","value":"Black"},{"trait_type":"Body","value":"Man"},{"trait_type":"Dress","value":"Suit Tie Blue"},{"trait_type":"Face","value":"Pipe"},{"trait_type":"Eye","value":"Eye"}] */
+      metadata_attributes: string;
+      /** @example 14265936 */
+      block_number_minted: string;
+      opensea_lookup?: { [key: string]: unknown };
+      /** @example 0xdcf086e3f7954b38180daae1405569da86588bfe */
+      minter_address: string;
+      /** @example 0x2c8d7ec7a8439b0f67b50e93be63242de52e9b5cdfc7dc0aee80c6a2f104c41a */
+      transaction_minted: string;
+      frozen_log_index?: { [key: string]: unknown };
+      imported?: { [key: string]: unknown };
+      /**
+       * @description When the token_uri was last updated
+       * @example 2021-02-24T00:47:26.647Z
+       */
+      last_token_uri_sync: string;
+      /**
+       * @description When the metadata was last updated
+       * @example 2021-02-24T00:47:26.647Z
+       */
+      last_metadata_sync: string;
+      /**
+       * Format: date-time
+       * @example 2022-02-24T00:47:26.647Z
+       */
+      createdAt: string;
+      /**
+       * Format: date-time
+       * @example 2022-04-09T23:56:44.807Z
+       */
+      updatedAt: string;
+    };
+    nftWalletCollections: {
+      /**
+       * @description The syncing status of the address [SYNCING/SYNCED]
+       * @example SYNCING
+       */
+      status?: string;
+      /**
+       * @description The total number of matches for this query
+       * @example 2000
+       */
+      total?: number;
+      /**
+       * @description The page of the current result
+       * @example 2
+       */
+      page?: number;
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
+      page_size?: number;
+      /** @description The cursor to get to the next page */
+      cursor?: string;
+      result?: components["schemas"]["nftCollections"][];
     };
     nftCollection: {
-      /** The total number of matches for this query */
+      /**
+       * @description The total number of matches for this query
+       * @example 2000
+       */
       total?: number;
-      /** The page of the current result */
+      /**
+       * @description The page of the current result
+       * @example 2
+       */
       page?: number;
-      /** The number of results per page */
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
       page_size?: number;
+      /** @description The cursor to get to the next page */
+      cursor?: string;
       result?: components["schemas"]["nft"][];
     };
     nftMetadataCollection: {
-      /** The total number of matches for this query */
+      /**
+       * @description The total number of matches for this query
+       * @example 2000
+       */
       total?: number;
-      /** The page of the current result */
+      /**
+       * @description The page of the current result
+       * @example 2
+       */
       page?: number;
-      /** The number of results per page */
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
       page_size?: number;
       result?: components["schemas"]["nftMetadata"][];
     };
-    nftOwner: {
-      /** The address of the contract of the NFT */
+    nftCollections: {
+      /**
+       * @description The address of the contract of the NFT
+       * @example 0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB
+       */
       token_address: string;
-      /** The token id of the NFT */
-      token_id: string;
-      /** The type of NFT contract standard */
+      /**
+       * @description The type of NFT contract standard
+       * @example ERC721
+       */
       contract_type: string;
-      /** The address of the owner of the NFT */
-      owner_of: string;
-      /** The blocknumber when the amount or owner changed */
-      block_number: string;
-      /** The blocknumber when the NFT was minted */
-      block_number_minted: string;
-      /** The uri to the metadata of the token */
-      token_uri?: string;
-      /** The metadata of the token */
-      metadata?: string;
-      /** when the metadata was last updated */
-      synced_at?: string;
-      /** The number of this item the user owns (used by ERC1155) */
-      amount?: string;
-      /** The name of the Token contract */
+      /**
+       * @description The name of the Token contract
+       * @example CryptoKitties
+       */
       name: string;
-      /** The symbol of the NFT contract */
+      /**
+       * @description The symbol of the NFT contract
+       * @example RARI
+       */
       symbol: string;
     };
+    nftOwner: {
+      /**
+       * @description The address of the contract of the NFT
+       * @example 0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB
+       */
+      token_address: string;
+      /**
+       * @description The token id of the NFT
+       * @example 15
+       */
+      token_id: string;
+      /**
+       * @description The type of NFT contract standard
+       * @example ERC721
+       */
+      contract_type: string;
+      /**
+       * @description The address of the owner of the NFT
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
+      owner_of: string;
+      /**
+       * @description The blocknumber when the amount or owner changed
+       * @example 88256
+       */
+      block_number: string;
+      /**
+       * @description The blocknumber when the NFT was minted
+       * @example 88256
+       */
+      block_number_minted: string;
+      /** @description The uri to the metadata of the token */
+      token_uri?: string;
+      /** @description The metadata of the token */
+      metadata?: string;
+      /** @description A normalized metadata version of the NFT's metadata. */
+      normalized_metadata?: components["schemas"]["normalizedMetadata"];
+      /**
+       * @description The number of this item the user owns (used by ERC1155)
+       * @example 1
+       */
+      amount?: string;
+      /**
+       * @description The name of the Token contract
+       * @example CryptoKitties
+       */
+      name: string;
+      /**
+       * @description The symbol of the NFT contract
+       * @example RARI
+       */
+      symbol: string;
+      /**
+       * @description The token hash
+       * @example 502cee781b0fb40ea02508b21d319ced
+       */
+      token_hash: string;
+      /**
+       * @description When the token_uri was last updated
+       * @example 2021-02-24T00:47:26.647Z
+       */
+      last_token_uri_sync: string;
+      /**
+       * @description When the metadata was last updated
+       * @example 2021-02-24T00:47:26.647Z
+       */
+      last_metadata_sync: string;
+    };
+    normalizedMetadataAttribute: {
+      /**
+       * @description The trait title or descriptor
+       * @example Eye Color
+       */
+      trait_type?: string;
+      /**
+       * @description The value of the attribute
+       * @example hazel
+       */
+      value?: { [key: string]: unknown };
+      /**
+       * @description The type the attribute value should be displayed as
+       * @example string
+       */
+      display_type?: string;
+      /**
+       * @description For numeric values, the upper range
+       * @example 100
+       */
+      max_value?: number;
+      /**
+       * @description The number of possible values for this trait
+       * @example 7
+       */
+      trait_count?: number;
+      /**
+       * @description Order the trait should appear in the attribute list.
+       * @example 1
+       */
+      order?: number;
+    };
+    normalizedMetadata: {
+      /**
+       * @description The name or title of the NFT
+       * @example Moralis Mug
+       */
+      name?: string;
+      /**
+       * @description A detailed description of the NFT
+       * @example Moralis Coffee nug 3D Asset that can be used in 3D worldspaces. This NFT is presented as a flat PNG, a Unity3D Prefab and a standard fbx.
+       */
+      description?: string;
+      /**
+       * @description The URL of the image of the NFT
+       * @example https://arw2wxg84h6b.moralishost.com:2053/server/files/tNJatzsHirx4V2VAep6sc923OYGxvkpBeJttR7Ks/de504bbadadcbe30c86278342fcf2560_moralismug.png
+       */
+      image?: string;
+      /**
+       * @description A link to additional information.
+       * @example https://giphy.com/gifs/loop-recursion-ting-aaODAv1iuQdgI
+       */
+      external_link?: string;
+      /**
+       * @description An animated version of the NFT's image
+       * @example https://giphy.com/gifs/food-design-donuts-o9ngTPVYW4qo8
+       */
+      animation_url?: string;
+      attributes?: components["schemas"]["normalizedMetadataAttribute"][];
+    };
     nftOwnerCollection: {
-      /** The syncing status of the address [SYNCING/SYNCED] */
+      /**
+       * @description The syncing status of the address [SYNCING/SYNCED]
+       * @example SYNCING
+       */
       status?: string;
-      /** The total number of matches for this query */
+      /**
+       * @description The total number of matches for this query
+       * @example 2000
+       */
       total?: number;
-      /** The page of the current result */
+      /**
+       * @description The page of the current result
+       * @example 2
+       */
       page?: number;
-      /** The number of results per page */
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
       page_size?: number;
+      /** @description The cursor to get to the next page */
+      cursor?: string;
       result?: components["schemas"]["nftOwner"][];
     };
     nftTransfer: {
-      /** The address of the contract of the NFT */
+      /**
+       * @description The address of the contract of the NFT
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
       token_address: string;
-      /** The token id of the NFT */
+      /**
+       * @description The token id of the NFT
+       * @example 15
+       */
       token_id: string;
-      /** The address that sent the NFT */
+      /**
+       * @description The address that sent the NFT
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
       from_address?: string;
-      /** The address that recieved the NFT */
+      /**
+       * @description The address that recieved the NFT
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
       to_address: string;
-      /** The value that was sent in the transaction (ETH/BNB/etc..) */
+      /**
+       * @description The value that was sent in the transaction (ETH/BNB/etc..)
+       * @example 1000000000000000
+       */
       value?: string;
-      /** The number of tokens transferred */
+      /**
+       * @description The number of tokens transferred
+       * @example 1
+       */
       amount?: string;
-      /** The type of NFT contract standard */
+      /**
+       * @description The type of NFT contract standard
+       * @example ERC721
+       */
       contract_type: string;
-      /** The blocknumber of the transaction */
+      /**
+       * @description The blocknumber of the transaction
+       * @example 88256
+       */
       block_number: string;
-      /** The block timestamp */
+      /**
+       * @description The block timestamp
+       * @example 2021-06-04T16:00:15
+       */
       block_timestamp: string;
-      /** The block hash of the transaction */
+      /** @description The block hash of the transaction */
       block_hash: string;
-      /** The transaction hash */
+      /**
+       * @description The transaction hash
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
       transaction_hash: string;
-      /** The transaction type */
+      /** @description The transaction type */
       transaction_type?: string;
-      /** The transaction index */
-      transaction_index?: string;
-      /** The log index */
+      /** @description The transaction index */
+      transaction_index?: number;
+      /** @description The log index */
       log_index: number;
-      /** The operator present only for ERC1155 Transfers */
+      /**
+       * @description The operator present only for ERC1155 Transfers
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
       operator?: string;
     };
     nftTransferCollection: {
-      /** The total number of matches for this query */
+      /**
+       * @description The total number of matches for this query
+       * @example 2000
+       */
       total: number;
-      /** The page of the current result */
+      /**
+       * @description The page of the current result
+       * @example 2
+       */
       page: number;
-      /** The number of results per page */
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
       page_size: number;
+      /** @description The cursor to get to the next page */
+      cursor: string;
       result: components["schemas"]["nftTransfer"][];
+      /**
+       * @description Indicator if the block exists
+       * @example true
+       */
+      block_exists?: boolean;
+      /**
+       * @description Indicator if the block is fully indexed
+       * @example true
+       */
+      index_complete?: boolean;
     };
     nftContractMetadata: {
-      /** The address of the token contract */
+      /**
+       * @description The address of the token contract
+       * @example 0x2d30ca6f024dbc1307ac8a1a44ca27de6f797ec22ef20627a1307243b0ab7d09
+       */
       token_address: string;
-      /** The name of the token Contract */
+      /**
+       * @description The name of the token Contract
+       * @example KryptoKitties
+       */
       name: string;
-      /** The abi of the token Contract */
-      abi?: string;
-      /** value -1 if the contract does not support token_uri */
-      supports_token_uri?: number;
-      /** Timestamp of when the contract was last synced with the node */
+      /** @description Timestamp of when the contract was last synced with the node */
       synced_at?: string;
-      /** The symbol of the NFT contract */
+      /**
+       * @description The symbol of the NFT contract
+       * @example RARI
+       */
       symbol: string;
-      /** The type of NFT contract */
+      /**
+       * @description The type of NFT contract
+       * @example ERC721
+       */
       contract_type: string;
     };
     nftContractMetadataCollection: {
-      /** The total number of matches for this query */
+      /**
+       * @description The total number of matches for this query
+       * @example 2000
+       */
       total: number;
-      /** The page of the current result */
+      /**
+       * @description The page of the current result
+       * @example 2
+       */
       page: number;
-      /** The number of results per page */
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
       page_size: number;
       result: components["schemas"]["nftContractMetadata"][];
     };
     erc20Transaction: {
-      /** The transaction hash */
+      /**
+       * @description The transaction hash
+       * @example 0x2d30ca6f024dbc1307ac8a1a44ca27de6f797ec22ef20627a1307243b0ab7d09
+       */
       transaction_hash: string;
-      /** The address of the token */
+      /**
+       * @description The address of the token
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
       address: string;
-      /** The block timestamp */
+      /**
+       * @description The block timestamp
+       * @example 2021-04-02T10:07:54.000Z
+       */
       block_timestamp: string;
-      /** The block number */
+      /**
+       * @description The block number
+       * @example 12526958
+       */
       block_number: string;
-      /** The block hash */
+      /**
+       * @description The block hash
+       * @example 0x0372c302e3c52e8f2e15d155e2c545e6d802e479236564af052759253b20fd86
+       */
       block_hash: string;
-      /** The recipient */
+      /**
+       * @description The recipient
+       * @example 0x62AED87d21Ad0F3cdE4D147Fdcc9245401Af0044
+       */
       to_address: string;
-      /** The sender */
+      /**
+       * @description The sender
+       * @example 0xd4a3BebD824189481FC45363602b83C9c7e9cbDf
+       */
       from_address: string;
-      /** The value that was transfered (in wei) */
+      /**
+       * @description The value that was transfered (in wei)
+       * @example 650000000000000000
+       */
       value: string;
+      /**
+       * @description The transaction index of the transfer within the block
+       * @example 12
+       */
+      transaction_index: number;
+      /**
+       * @description The log index of the transfer within the block
+       * @example 2
+       */
+      log_index: number;
     };
     historicalNftTransfer: {
-      /** The transaction hash */
+      /**
+       * @description The transaction hash
+       * @example 0x2d30ca6f024dbc1307ac8a1a44ca27de6f797ec22ef20627a1307243b0ab7d09
+       */
       transaction_hash: string;
-      /** The address of the token */
+      /**
+       * @description The address of the token
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
       address: string;
-      /** The block timestamp */
+      /**
+       * @description The block timestamp
+       * @example 2021-04-02T10:07:54.000Z
+       */
       block_timestamp: string;
-      /** The block number */
+      /**
+       * @description The block number
+       * @example 12526958
+       */
       block_number: string;
-      /** The block hash */
+      /**
+       * @description The block hash
+       * @example 0x0372c302e3c52e8f2e15d155e2c545e6d802e479236564af052759253b20fd86
+       */
       block_hash: string;
-      /** The recipient */
+      /**
+       * @description The recipient
+       * @example 0x62AED87d21Ad0F3cdE4D147Fdcc9245401Af0044
+       */
       to_address: string;
-      /** The sender */
+      /**
+       * @description The sender
+       * @example 0xd4a3BebD824189481FC45363602b83C9c7e9cbDf
+       */
       from_address: string;
-      /** The token ids of the tokens that were transfered */
+      /** @description The token ids of the tokens that were transfered */
       token_ids: string[];
-      /** The amounts that were transfered */
+      /** @description The amounts that were transfered */
       amounts: string[];
-      /** They contract type of the transfer */
+      /**
+       * @description They contract type of the transfer
+       * @example ERC721
+       */
       contract_type: string;
     };
     erc20Metadata: {
-      /** The address of the token contract */
+      /**
+       * @description The address of the token contract
+       * @example 0x2d30ca6f024dbc1307ac8a1a44ca27de6f797ec22ef20627a1307243b0ab7d09
+       */
       address: string;
-      /** The name of the token Contract */
+      /**
+       * @description The name of the token Contract
+       * @example Kylin Network
+       */
       name: string;
-      /** The symbol of the NFT contract */
+      /**
+       * @description The symbol of the NFT contract
+       * @example KYL
+       */
       symbol: string;
-      /** The number of decimals on of the token */
+      /**
+       * @description The number of decimals on of the token
+       * @example 18
+       */
       decimals: string;
-      /** The logo of the token */
+      /**
+       * @description The logo of the token
+       * @example https://cdn.moralis.io/eth/0x67b6d479c7bb412c54e03dca8e1bc6740ce6b99c.png
+       */
       logo?: string;
-      /** The logo hash */
+      /**
+       * @description The logo hash
+       * @example ee7aa2cdf100649a3521a082116258e862e6971261a39b5cd4e4354fcccbc54d
+       */
       logo_hash?: string;
-      /** The thumbnail of the logo */
+      /**
+       * @description The thumbnail of the logo
+       * @example https://cdn.moralis.io/eth/0x67b6d479c7bb412c54e03dca8e1bc6740ce6b99c_thumb.png
+       */
       thumbnail?: string;
       block_number?: string;
       validated?: string;
     };
+    metadataResync: {
+      /** @description The status of resync request */
+      status: string;
+    };
     erc721Metadata: {
-      /** The name of the token Contract */
+      /**
+       * @description The name of the token Contract
+       * @example Kylin Network
+       */
       name: string;
-      /** The symbol of the NFT contract */
+      /**
+       * @description The symbol of the NFT contract
+       * @example KYL
+       */
       symbol: string;
       token_uri?: string;
     };
     erc20Price: {
       nativePrice?: components["schemas"]["nativeErc20Price"];
-      /** The price in USD for the token */
+      /**
+       * Format: double
+       * @description The price in USD for the token
+       * @example 19.722370676
+       */
       usdPrice: number;
-      /** The address of the exchange used to calculate the price */
+      /**
+       * @description The address of the exchange used to calculate the price
+       * @example 0x1f98431c8ad98523631ae4a59f267346ea31f984
+       */
       exchangeAddress?: string;
-      /** The name of the exchange used for calculating the price */
+      /**
+       * @description The name of the exchange used for calculating the price
+       * @example Uniswap v3
+       */
       exchangeName?: string;
-    } & {
-      symbol: unknown;
     };
     nativeErc20Price: {
-      /** The native price of the token */
+      /**
+       * @description The native price of the token
+       * @example 8409770570506626
+       */
       value: string;
-      /** The number of decimals of the token */
+      /**
+       * @description The number of decimals of the token
+       * @example 18
+       */
       decimals: number;
-      /** The Name of the token */
+      /**
+       * @description The Name of the token
+       * @example Ether
+       */
       name: string;
-      /** The Symbol of the token */
+      /**
+       * @description The Symbol of the token
+       * @example ETH
+       */
       symbol: string;
     };
+    erc20TransactionCollection: {
+      /**
+       * @description The total number of matches for this query
+       * @example 2000
+       */
+      total?: number;
+      /**
+       * @description The page of the current result
+       * @example 2
+       */
+      page?: number;
+      /**
+       * @description The number of results per page
+       * @example 100
+       */
+      page_size?: number;
+      result?: components["schemas"]["erc20Transaction"][];
+    };
+    ens: {
+      /**
+       * @description Resolved ENS address
+       * @example Vitalik.eth
+       */
+      name: string;
+    };
     resolve: {
-      /** Resolved domain address */
+      /**
+       * @description Resolved domain address
+       * @example 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+       */
       address: string;
     };
+    reservesPair: {
+      /** @example 220969226548536862025877 */
+      reserve0?: string;
+      /** @example 844810441191293211036 */
+      reserve1?: string;
+    };
     reservesCollection: {
-      /** reserve0 */
-      reserve0: string;
-      /** reserve1 */
-      reserve1: string;
+      token0?: {
+        /** @example 0x2b591e99afe9f32eaa6214f7b7629768c40eeb39 */
+        address?: string;
+        /** @example HEX */
+        name?: string;
+        /** @example HEX */
+        symbol?: string;
+        /** @example 9 */
+        decimals?: string;
+        /** @example https://cdn.moralis.io/eth/0x2b591e99afe9f32eaa6214f7b7629768c40eeb39.png */
+        logo?: string;
+        /** @example b3bd1b5512965d7b6aeee903dcc6d28b116d58c788eb41e9c1690baed878beaa */
+        logo_hash?: string;
+        /** @example https://cdn.moralis.io/eth/0x2b591e99afe9f32eaa6214f7b7629768c40eeb39_thumb.png */
+        thumbnail?: string;
+        /** @example 14836562 */
+        block_number?: string;
+        validated?: number;
+        /** @example 2022-01-20T09:39:55.818Z */
+        created_at?: string;
+      };
+      token1?: {
+        /** @example 0xdac17f958d2ee523a2206206994597c13d831ec7 */
+        address?: string;
+        /** @example Tether USD */
+        name?: string;
+        /** @example USDT */
+        symbol?: string;
+        /** @example 6 */
+        decimals?: string;
+        /** @example https://cdn.moralis.io/eth/0xdac17f958d2ee523a2206206994597c13d831ec7.png */
+        logo?: string;
+        /** @example ee7aa2cdf100649a3521a082116258e862e6971261a39b5cd4e4354fcccbc54d */
+        logo_hash?: string;
+        /** @example https://cdn.moralis.io/eth/0xdac17f958d2ee523a2206206994597c13d831ec7_thumb.png */
+        thumbnail?: string;
+        /** @example 4638568 */
+        block_number?: string;
+        /** @example 1 */
+        validated?: number;
+        /** @example 2022-01-20T09:39:55.818Z */
+        created_at?: string;
+      };
+      /** @example 0xbbb9bf440d0f686487925fef3b0a0f9aa67753f6 */
+      pairAddress?: string;
     };
     ipfsFileRequest: {
-      /** Path to file */
+      /**
+       * @description Path to file
+       * @example moralis/logo.jpg
+       */
       path: string;
-      /** base64 or JSON */
+      /**
+       * @description base64 or JSON
+       * @example iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3
+       */
       content: string;
     };
     ipfsFile: {
-      /** Path to file */
+      /**
+       * @description Path to file
+       * @example https://ipfs.moralis.io/QmPQ3YJ3hgfsBzJ1U4MGyV2C1GhDy6MWCENr1qMdMpKVnY/moralis/logo.jpg
+       */
       path: string;
+    };
+    web3version: {
+      /**
+       * @description version of the api
+       * @example 1.0.0
+       */
+      version: string;
+    };
+    endpointWeights: {
+      /**
+       * @description endpoint
+       * @example endpointWeights
+       */
+      endpoint: string;
+      /**
+       * @description The path to the endpoint
+       * @example /info/endpointWeights
+       */
+      path: string;
+      /**
+       * @description The number of hits the requests counts for ratelimiting
+       * @example 1
+       */
+      rateLimitWeight: string;
+      /** @description The number of hits the requests counts for billing */
+      price: string;
     };
   };
 }
 
 export interface operations {
-  /** Gets the contents of a block by block hash */
+  /** Get the contents of a block by block hash. */
   getBlock: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
       };
       path: {
         /** The block hash or block number */
@@ -670,14 +1690,12 @@ export interface operations {
       };
     };
   };
-  /** Gets the closest block of the provided date */
+  /** Get the closest block of the provided date. */
   getDateToBlock: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** web3 provider url to user when using local dev chain */
-        providerUrl?: string;
         /** Unix date in miliseconds or a datestring (any format that is accepted by momentjs) */
         date: string;
       };
@@ -691,14 +1709,12 @@ export interface operations {
       };
     };
   };
-  /** Gets the logs from an address */
+  /** Get the logs for an address. */
   getLogsByAddress: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
         /**
          * The block number
          * * Provide the param 'block_numer' or ('from_block' and / or 'to_block')
@@ -739,6 +1755,10 @@ export interface operations {
         topic2?: string;
         /** topic3 */
         topic3?: string;
+        /** The desired page size of the result. */
+        limit?: number;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
       };
       path: {
         /** address */
@@ -746,22 +1766,24 @@ export interface operations {
       };
     };
     responses: {
-      /** Returns the logs of an address */
+      /** Returns the logs for an address */
       200: {
         content: {
-          "application/json": components["schemas"]["logEventByAddress"];
+          "application/json": components["schemas"]["logCollection"];
         };
       };
     };
   };
-  /** Gets NFT transfers by block number or block hash */
+  /** Get NFT transfers by block number or block hash. */
   getNFTTransfersByBlock: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
+        /** The desired page size of the result. */
+        limit?: number;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
       };
       path: {
         /** The block hash or block number */
@@ -777,14 +1799,12 @@ export interface operations {
       };
     };
   };
-  /** Gets the contents of a block transaction by hash */
+  /** Get the contents of a transaction by transaction hash. */
   getTransaction: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
       };
       path: {
         /** The transaction hash */
@@ -792,7 +1812,7 @@ export interface operations {
       };
     };
     responses: {
-      /** Returns the contents of a block transaction */
+      /** Transaction details by transaction hash */
       200: {
         content: {
           "application/json": components["schemas"]["blockTransaction"];
@@ -800,16 +1820,12 @@ export interface operations {
       };
     };
   };
-  /** Gets events in descending order based on block number */
+  /** Get events for a specific contract ordered by block number in descending order. */
   getContractEvents: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
-        /** web3 provider url to user when using local dev chain */
-        providerUrl?: string;
         /**
          * The minimum block number from where to get the logs
          * * Provide the param 'from_block' or 'from_date'
@@ -833,12 +1849,12 @@ export interface operations {
          * * Provide the param 'to_block' or 'to_date'
          * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
          */
-        to_date?: unknown;
+        to_date?: string;
         /** The topic of the event */
         topic: string;
         /** offset */
         offset?: number;
-        /** limit */
+        /** The desired page size of the result. */
         limit?: number;
       };
       path: {
@@ -850,7 +1866,24 @@ export interface operations {
       /** Returns a collection of events by topic */
       200: {
         content: {
-          "application/json": components["schemas"]["logEvent"][];
+          "application/json": {
+            /**
+             * @description The total number of matches for this query
+             * @example 2000
+             */
+            total?: number;
+            /**
+             * @description The page of the current result
+             * @example 2
+             */
+            page?: number;
+            /**
+             * @description The number of results per page
+             * @example 100
+             */
+            page_size?: number;
+            result?: components["schemas"]["logEvent"][];
+          };
         };
       };
     };
@@ -861,16 +1894,12 @@ export interface operations {
       };
     };
   };
-  /** Runs a given function of a contract abi and returns readonly data */
+  /** Run a given function of a contract abi and retrieve readonly data. */
   runContractFunction: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
-        /** web3 provider url to user when using local dev chain */
-        providerUrl?: string;
         /** function_name */
         function_name: string;
       };
@@ -887,21 +1916,19 @@ export interface operations {
         };
       };
     };
-    /** The contract abi */
+    /** Body */
     requestBody: {
       content: {
-        "application/json": { [key: string]: unknown };
+        "application/json": components["schemas"]["RunContractDto"];
       };
     };
   };
-  /** Gets native transactions in descending order based on block number */
+  /** Get native transactions ordered by block number in descending order. */
   getTransactions: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
         /**
          * The minimum block number from where to get the transactions
          * * Provide the param 'from_block' or 'from_date'
@@ -925,10 +1952,10 @@ export interface operations {
          * * Provide the param 'to_block' or 'to_date'
          * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
          */
-        to_date?: unknown;
-        /** offset */
-        offset?: number;
-        /** limit */
+        to_date?: string;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
+        /** The desired page size of the result. */
         limit?: number;
       };
       path: {
@@ -945,14 +1972,61 @@ export interface operations {
       };
     };
   };
-  /** Gets native balance for a specific address */
+  /** Get native transactions ordered by block number in descending order. */
+  getTransactionsVerbose: {
+    parameters: {
+      query: {
+        /** The chain to query */
+        chain?: components["schemas"]["chainList"];
+        /**
+         * The minimum block number from where to get the transactions
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_block?: number;
+        /**
+         * The maximum block number from where to get the transactions.
+         * * Provide the param 'to_block' or 'to_date'
+         * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
+         */
+        to_block?: number;
+        /**
+         * The date from where to get the transactions (any format that is accepted by momentjs)
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_date?: string;
+        /**
+         * Get the transactions to this date (any format that is accepted by momentjs)
+         * * Provide the param 'to_block' or 'to_date'
+         * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
+         */
+        to_date?: string;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
+        /** The desired page size of the result. */
+        limit?: number;
+      };
+      path: {
+        /** address */
+        address: string;
+      };
+    };
+    responses: {
+      /** Returns a collection of native transactions. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["transactionVerboseCollection"];
+        };
+      };
+    };
+  };
+  /** Get native balance for a specific address. */
   getNativeBalance: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** web3 provider url to user when using local dev chain */
-        providerUrl?: string;
         /** The block number on which the balances should be checked */
         to_block?: number;
       };
@@ -970,16 +2044,16 @@ export interface operations {
       };
     };
   };
-  /** Gets token balances for a specific address */
+  /** Get token balances for a specific address. */
   getTokenBalances: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
         /** The block number on which the balances should be checked */
         to_block?: number;
+        /** The addresses to get balances for (Optional) */
+        token_addresses?: string[];
       };
       path: {
         /** The address for which token balances will be checked */
@@ -995,14 +2069,12 @@ export interface operations {
       };
     };
   };
-  /** Gets ERC20 token transactions in descending order based on block number */
+  /** Get ERC20 token transactions ordered by block number in descending order. */
   getTokenTransfers: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
         /**
          * The minimum block number from where to get the transactions
          * * Provide the param 'from_block' or 'from_date'
@@ -1026,11 +2098,11 @@ export interface operations {
          * * Provide the param 'to_block' or 'to_date'
          * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
          */
-        to_date?: unknown;
-        /** offset */
-        offset?: number;
-        /** limit */
+        to_date?: string;
+        /** The desired page size of the result. */
         limit?: number;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
       };
       path: {
         /** address */
@@ -1041,17 +2113,17 @@ export interface operations {
       /** Returns a collection of token transactions. */
       200: {
         content: {
-          "application/json": components["schemas"]["erc20Transaction"][];
+          "application/json": components["schemas"]["erc20TransactionCollection"];
         };
       };
     };
   };
   /**
-   * Gets NFTs owned by the given address
+   * Get NFTs owned by a given address.
    * * The response will include status [SYNCED/SYNCING] based on the contracts being indexed.
    * * Use the token_address param to get results for a specific contract only
    * * Note results will include all indexed NFTs
-   * * Any request which includes the token_address param will start the indexing process for that NFT collection the very first time it is requested
+   * * Any request which includes the token_address param will start the indexing process for that NFT collection the very first time it is requested.
    */
   getNFTs: {
     parameters: {
@@ -1060,12 +2132,14 @@ export interface operations {
         chain?: components["schemas"]["chainList"];
         /** The format of the token id */
         format?: "decimal" | "hex";
-        /** offset */
-        offset?: number;
-        /** limit */
+        /** The desired page size of the result. */
         limit?: number;
-        /** The field(s) to order on and if it should be ordered in ascending or descending order. Specified by: fieldName1.order,fieldName2.order. Example 1: "name", "name.ASC", "name.DESC", Example 2: "Name and Symbol", "name.ASC,symbol.DESC" */
-        order?: string;
+        /** The addresses to get balances for (Optional) */
+        token_addresses?: string[];
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
+        /** Should normalized metadata be returned? */
+        normalizeMetadata?: boolean;
       };
       path: {
         /** The owner of a given token */
@@ -1081,7 +2155,7 @@ export interface operations {
       };
     };
   };
-  /** Gets the transfers of the tokens matching the given parameters */
+  /** Get the transfers of the tokens matching the given parameters. */
   getNFTTransfers: {
     parameters: {
       query: {
@@ -1091,12 +2165,18 @@ export interface operations {
         format?: "decimal" | "hex";
         /** The transfer direction */
         direction?: "both" | "to" | "from";
-        /** offset */
-        offset?: number;
-        /** limit */
+        /**
+         * The minimum block number from where to get the transfers
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_block?: number;
+        /** To get the reserves at this block number */
+        to_block?: string;
+        /** The desired page size of the result. */
         limit?: number;
-        /** The field(s) to order on and if it should be ordered in ascending or descending order. Specified by: fieldName1.order,fieldName2.order. Example 1: "token_address", "token_address.ASC", "token_address.DESC", Example 2: "token_address and token_id", "token_address.ASC,token_id.DESC" */
-        order?: string;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
       };
       path: {
         /** The sender or recepient of the transfer */
@@ -1104,7 +2184,7 @@ export interface operations {
       };
     };
     responses: {
-      /** Returns a collection of NFT transfer */
+      /** Returns a collection of NFT transfers */
       200: {
         content: {
           "application/json": components["schemas"]["nftTransferCollection"];
@@ -1112,11 +2192,36 @@ export interface operations {
       };
     };
   };
+  /** Get the nft collections owned by an user */
+  getWalletNFTCollections: {
+    parameters: {
+      query: {
+        /** The chain to query */
+        chain?: components["schemas"]["chainList"];
+        /** The desired page size of the result. */
+        limit?: number;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
+      };
+      path: {
+        /** The owner wallet address of the NFT collections */
+        address: string;
+      };
+    };
+    responses: {
+      /** Returns a collection of NFTs owned by an user */
+      200: {
+        content: {
+          "application/json": components["schemas"]["nftWalletCollections"];
+        };
+      };
+    };
+  };
   /**
-   * Gets NFTs owned by the given address
+   * Get NFTs owned by the given address for a specific NFT contract address.
    * * Use the token_address param to get results for a specific contract only
    * * Note results will include all indexed NFTs
-   * * Any request which includes the token_address param will start the indexing process for that NFT collection the very first time it is requested
+   * * Any request which includes the token_address param will start the indexing process for that NFT collection the very first time it is requested.
    */
   getNFTsForContract: {
     parameters: {
@@ -1125,18 +2230,16 @@ export interface operations {
         chain?: components["schemas"]["chainList"];
         /** The format of the token id */
         format?: "decimal" | "hex";
-        /** offset */
-        offset?: number;
-        /** limit */
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
+        /** The desired page size of the result. */
         limit?: number;
-        /** The field(s) to order on and if it should be ordered in ascending or descending order. Specified by: fieldName1.order,fieldName2.order. Example 1: "name", "name.ASC", "name.DESC", Example 2: "Name and Symbol", "name.ASC,symbol.DESC" */
-        order?: string;
       };
       path: {
         /** The owner of a given token */
         address: string;
         /** Address of the contract */
-        token_address?: string;
+        token_address: string;
       };
     };
     responses: {
@@ -1154,16 +2257,12 @@ export interface operations {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
-        /** web3 provider url to user when using local dev chain */
-        providerUrl?: string;
         /** The addresses to get metadata for */
         addresses: string[];
       };
     };
     responses: {
-      /** Returns metadata (name, symbol, decimals, logo) for a given token contract address. */
+      /** Get metadata (name, symbol, decimals, logo) for a given ERC20 token contract address. */
       200: {
         content: {
           "application/json": components["schemas"]["erc20Metadata"][];
@@ -1171,14 +2270,87 @@ export interface operations {
       };
     };
   };
-  /** Returns metadata (name, symbol, decimals, logo) for a given token contract address. */
+  /** Get the nft trades for a given contract and marketplace. */
+  getNFTTrades: {
+    parameters: {
+      query: {
+        /** The chain to query */
+        chain?: components["schemas"]["chainList"];
+        /**
+         * The minimum block number from where to get the transfers
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_block?: number;
+        /** To get the reserves at this block number */
+        to_block?: string;
+        /**
+         * The date from where to get the transfers (any format that is accepted by momentjs)
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_date?: string;
+        /**
+         * Get the reserves to this date (any format that is accepted by momentjs)
+         * * Provide the param 'to_block' or 'to_date'
+         * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
+         */
+        to_date?: string;
+        /** marketplace from where to get the trades (only opensea is supported at the moment) */
+        marketplace?: "opensea";
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
+        /** The desired page size of the result. */
+        limit?: number;
+      };
+      path: {
+        /** Address of the contract */
+        address: string;
+      };
+    };
+    responses: {
+      /** Returns the trades */
+      200: {
+        content: {
+          "application/json": components["schemas"]["tradeCollection"];
+        };
+      };
+    };
+  };
+  /** Get the lowest executed price for an NFT token contract for the last x days (only trades paid in ETH). */
+  getNFTLowestPrice: {
+    parameters: {
+      query: {
+        /** The chain to query */
+        chain?: components["schemas"]["chainList"];
+        /**
+         * The number of days to look back to find the lowest price
+         * If not provided 7 days will be the default
+         */
+        days?: number;
+        /** marketplace from where to get the trades (only opensea is supported at the moment) */
+        marketplace?: "opensea";
+      };
+      path: {
+        /** Address of the contract */
+        address: string;
+      };
+    };
+    responses: {
+      /** Returns the trade with the lowest price */
+      200: {
+        content: {
+          "application/json": components["schemas"]["trade"];
+        };
+      };
+    };
+  };
+  /** Get metadata (name, symbol, decimals, logo) for a list of token symbols. */
   getTokenMetadataBySymbol: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
         /** The symbols to get metadata for */
         symbols: string[];
       };
@@ -1192,14 +2364,12 @@ export interface operations {
       };
     };
   };
-  /** Returns the price nominated in the native token and usd for a given token contract address. */
+  /** Get the token price denominated in the blockchains native token and USD. */
   getTokenPrice: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** web3 provider url to user when using local dev chain */
-        providerUrl?: string;
         /** The factory name or address of the token exchange */
         exchange?: string;
         /** to_block */
@@ -1211,7 +2381,7 @@ export interface operations {
       };
     };
     responses: {
-      /** Returns the price nominated in the native token and usd for a given token contract address */
+      /** Returns the price denominated in the blockchains native token and USD for a given token contract address */
       200: {
         content: {
           "application/json": components["schemas"]["erc20Price"];
@@ -1219,14 +2389,12 @@ export interface operations {
       };
     };
   };
-  /** Gets ERC20 token contract transactions in descending order based on block number */
-  getTokenAdressTransfers: {
+  /** Get ERC20 token transactions ordered by block number in descending order. */
+  getTokenAddressTransfers: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** The subdomain of the moralis server to use (Only use when selecting local devchain as chain) */
-        subdomain?: string;
         /**
          * The minimum block number from where to get the transfers
          * * Provide the param 'from_block' or 'from_date'
@@ -1250,10 +2418,10 @@ export interface operations {
          * * Provide the param 'to_block' or 'to_date'
          * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
          */
-        to_date?: unknown;
+        to_date?: string;
         /** offset */
         offset?: number;
-        /** limit */
+        /** The desired page size of the result. */
         limit?: number;
       };
       path: {
@@ -1265,19 +2433,17 @@ export interface operations {
       /** Returns a collection of token contract transactions. */
       200: {
         content: {
-          "application/json": components["schemas"]["erc20Transaction"][];
+          "application/json": components["schemas"]["erc20TransactionCollection"];
         };
       };
     };
   };
-  /** Gets the amount which the spender is allowed to withdraw from the spender */
+  /** Get the amount which the spender is allowed to withdraw on behalf of the owner. */
   getTokenAllowance: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
-        /** web3 provider url to user when using local dev chain */
-        providerUrl?: string;
         /** The address of the token owner */
         owner_address: string;
         /** The address of the token spender */
@@ -1289,7 +2455,7 @@ export interface operations {
       };
     };
     responses: {
-      /** Returns the amount which the spender is allowed to withdraw from the owner.. */
+      /** Returns the amount which the spender is allowed to withdraw on behalf of the owner. */
       200: {
         content: {
           "application/json": components["schemas"]["erc20Allowance"];
@@ -1297,7 +2463,7 @@ export interface operations {
       };
     };
   };
-  /** Gets NFTs that match a given metadata search. */
+  /** Get NFTs that match a given metadata search query. */
   searchNFTs: {
     parameters: {
       query: {
@@ -1317,9 +2483,35 @@ export interface operations {
           | "name,attributes"
           | "description,attributes"
           | "name,description,attributes";
-        /** offset */
-        offset?: number;
-        /** limit */
+        /**
+         * The minimum block number from where to start the search
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_block?: number;
+        /**
+         * The maximum block number from where to end the search
+         * * Provide the param 'to_block' or 'to_date'
+         * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
+         */
+        to_block?: number;
+        /**
+         * The date from where to start the search (any format that is accepted by momentjs)
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_date?: string;
+        /**
+         * Get search results up until this date (any format that is accepted by momentjs)
+         * * Provide the param 'to_block' or 'to_date'
+         * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
+         */
+        to_date?: string;
+        /** The addresses to get metadata for */
+        addresses?: string[];
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
+        /** The desired page size of the result. */
         limit?: number;
       };
     };
@@ -1332,10 +2524,57 @@ export interface operations {
       };
     };
   };
+  /** Gets the transfers of the tokens from a block number to a block number. */
+  getNftTransfersFromToBlock: {
+    parameters: {
+      query: {
+        /** The chain to query */
+        chain?: components["schemas"]["chainList"];
+        /**
+         * The minimum block number from where to get the transfers
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_block?: number;
+        /**
+         * The maximum block number from where to get the transfers.
+         * * Provide the param 'to_block' or 'to_date'
+         * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
+         */
+        to_block?: number;
+        /**
+         * The date from where to get the transfers (any format that is accepted by momentjs)
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_date?: string;
+        /**
+         * Get transfers up until this date (any format that is accepted by momentjs)
+         * * Provide the param 'to_block' or 'to_date'
+         * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
+         */
+        to_date?: string;
+        /** The format of the token id */
+        format?: "decimal" | "hex";
+        /** The desired page size of the result. */
+        limit?: number;
+        /** The cursor returned in the previous response (for getting the next page) */
+        cursor?: string;
+      };
+    };
+    responses: {
+      /** Returns a collection of NFT transfers */
+      200: {
+        content: {
+          "application/json": components["schemas"]["nftTransferCollection"];
+        };
+      };
+    };
+  };
   /**
-   * Gets data, including metadata (where available), for all token ids for the given contract address.
-   * * Results are sorted by the block the token id was minted (descending) and limited to 100 per page by default
-   * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection
+   * Get all NFTs, including metadata (where available), for all NFTs for the given contract address.
+   * * Results are limited to 100 per page by default
+   * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection.
    */
   getAllTokenIds: {
     parameters: {
@@ -1344,12 +2583,16 @@ export interface operations {
         chain?: components["schemas"]["chainList"];
         /** The format of the token id */
         format?: "decimal" | "hex";
-        /** offset */
-        offset?: number;
-        /** limit */
+        /** The desired page size of the result. */
         limit?: number;
-        /** If the order should be Ascending or Descending based on the blocknumber on which the NFT was minted. Allowed values: "ASC", "DESC" */
-        order?: string;
+        /** The number of subranges to split the results into */
+        totalRanges?: number;
+        /** The desired subrange to query */
+        range?: number;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
+        /** Should normalized metadata be returned? */
+        normalizeMetadata?: boolean;
       };
       path: {
         /** Address of the contract */
@@ -1365,20 +2608,65 @@ export interface operations {
       };
     };
   };
-  /** Gets the transfers of the tokens matching the given parameters */
+  /** Returns an array of NFTs specified in the request */
+  getMultipleNFTs: {
+    parameters: {
+      query: {
+        /** The chain to query */
+        chain?: components["schemas"]["chainList"];
+      };
+    };
+    responses: {
+      /** Returns a collection of nft owners */
+      200: {
+        content: {
+          "application/json": components["schemas"]["nftOwner"][];
+        };
+      };
+    };
+    /** Body */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GetMultipleNftsDto"];
+      };
+    };
+  };
+  /** Get the transfers of the tokens matching the given parameters. */
   getContractNFTTransfers: {
     parameters: {
       query: {
         /** The chain to query */
         chain?: components["schemas"]["chainList"];
+        /**
+         * The minimum block number from where to get the transfers
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_block?: number;
+        /**
+         * The maximum block number from where to get the transfers.
+         * * Provide the param 'to_block' or 'to_date'
+         * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
+         */
+        to_block?: number;
+        /**
+         * The date from where to get the transfers (any format that is accepted by momentjs)
+         * * Provide the param 'from_block' or 'from_date'
+         * * If 'from_date' and 'from_block' are provided, 'from_block' will be used.
+         */
+        from_date?: string;
+        /**
+         * Get transfers up until this date (any format that is accepted by momentjs)
+         * * Provide the param 'to_block' or 'to_date'
+         * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
+         */
+        to_date?: string;
         /** The format of the token id */
         format?: "decimal" | "hex";
-        /** offset */
-        offset?: number;
-        /** limit */
+        /** The desired page size of the result. */
         limit?: number;
-        /** The field(s) to order on and if it should be ordered in ascending or descending order. Specified by: fieldName1.order,fieldName2.order. Example 1: "block_number", "block_number.ASC", "block_number.DESC", Example 2: "block_number and contract_type", "block_number.ASC,contract_type.DESC" */
-        order?: string;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
       };
       path: {
         /** Address of the contract */
@@ -1395,10 +2683,8 @@ export interface operations {
     };
   };
   /**
-   * Gets all owners of NFT items within a given contract collection
-   * * Use after /nft/contract/{token_address} to find out who owns each token id in a collection
-   * * Make sure to include a sort parm on a column like block_number_minted for consistent pagination results
-   * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection
+   * Get all owners of NFTs within a given contract.
+   * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection.
    */
   getNFTOwners: {
     parameters: {
@@ -1407,12 +2693,12 @@ export interface operations {
         chain?: components["schemas"]["chainList"];
         /** The format of the token id */
         format?: "decimal" | "hex";
-        /** offset */
-        offset?: number;
-        /** limit */
+        /** The desired page size of the result. */
         limit?: number;
-        /** The field(s) to order on and if it should be ordered in ascending or descending order. Specified by: fieldName1.order,fieldName2.order. Example 1: "name", "name.ASC", "name.DESC", Example 2: "Name and Symbol", "name.ASC,symbol.DESC" */
-        order?: string;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
+        /** Should normalized metadata be returned? */
+        normalizeMetadata?: boolean;
       };
       path: {
         /** Address of the contract */
@@ -1429,7 +2715,7 @@ export interface operations {
     };
   };
   /**
-   * Gets the contract level metadata (name, symbol, base token uri) for the given contract
+   * Get the contract level metadata (name, symbol, base token uri) for the given contract
    * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection
    */
   getNFTMetadata: {
@@ -1453,7 +2739,69 @@ export interface operations {
     };
   };
   /**
-   * Gets data, including metadata (where available), for the given token id of the given contract address.
+   * ReSync the metadata for an NFT
+   * * The metadata flag will request a the NFT's metadata from the already existing token_uri
+   * * The uri(default) flag will fetch the latest token_uri from the given NFT address. In sync mode the metadata will also be fetched
+   * * The sync mode will make the endpoint synchronous so it will wait for the task to be completed before responding
+   * * The async mode(default) will make the endpoint asynchronous so we will wait for the task to be completed before responding
+   */
+  reSyncMetadata: {
+    parameters: {
+      query: {
+        /** The chain to query */
+        chain?: components["schemas"]["chainList"];
+        /** The type of resync to operate */
+        flag?: "uri" | "metadata";
+        /** To define the behaviour of the endpoint */
+        mode?: "async" | "sync";
+      };
+      path: {
+        /** Address of the contract */
+        address: string;
+        /** The id of the token */
+        token_id: string;
+      };
+    };
+    responses: {
+      /** (In sync mode) Resync request executed. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["metadataResync"];
+        };
+      };
+      /** The resync request was received and will be executed. */
+      202: {
+        content: {
+          "application/json": components["schemas"]["metadataResync"];
+        };
+      };
+      /** (In sync mode) Resync request executed and metadata could not be updated. */
+      404: {
+        content: {
+          "application/json": components["schemas"]["metadataResync"];
+        };
+      };
+    };
+  };
+  /** Initiates a sync of a previously non synced Contract. */
+  syncNFTContract: {
+    parameters: {
+      query: {
+        /** The chain to query */
+        chain?: components["schemas"]["chainList"];
+      };
+      path: {
+        /** Address of the contract */
+        address: string;
+      };
+    };
+    responses: {
+      /** Contract Address was triggered for index. */
+      201: unknown;
+    };
+  };
+  /**
+   * Get NFT data, including metadata (where available), for the given NFT token id of the given contract address.
    * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection
    */
   getTokenIdMetadata: {
@@ -1463,6 +2811,8 @@ export interface operations {
         chain?: components["schemas"]["chainList"];
         /** The format of the token id */
         format?: "decimal" | "hex";
+        /** Should normalized metadata be returned? */
+        normalizeMetadata?: boolean;
       };
       path: {
         /** Address of the contract */
@@ -1472,7 +2822,7 @@ export interface operations {
       };
     };
     responses: {
-      /** Returns the specified NFT */
+      /** Returns the specified NFT. */
       200: {
         content: {
           "application/json": components["schemas"]["nft"];
@@ -1481,9 +2831,7 @@ export interface operations {
     };
   };
   /**
-   * Gets all owners of NFT items within a given contract collection
-   * * Use after /nft/contract/{token_address} to find out who owns each token id in a collection
-   * * Make sure to include a sort parm on a column like block_number_minted for consistent pagination results
+   * Get all owners of a specific NFT given the contract address and token ID.
    * * Requests for contract addresses not yet indexed will automatically start the indexing process for that NFT collection
    */
   getTokenIdOwners: {
@@ -1493,12 +2841,12 @@ export interface operations {
         chain?: components["schemas"]["chainList"];
         /** The format of the token id */
         format?: "decimal" | "hex";
-        /** offset */
-        offset?: number;
-        /** limit */
+        /** The desired page size of the result. */
         limit?: number;
-        /** The field(s) to order on and if it should be ordered in ascending or descending order. Specified by: fieldName1.order,fieldName2.order. Example 1: "name", "name.ASC", "name.DESC", Example 2: "Name and Symbol", "name.ASC,symbol.DESC" */
-        order?: string;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
+        /** Should normalized metadata be returned? */
+        normalizeMetadata?: boolean;
       };
       path: {
         /** Address of the contract */
@@ -1508,7 +2856,7 @@ export interface operations {
       };
     };
     responses: {
-      /** Returns a collection of NFTs with their respective owners */
+      /** Returns a collection of NFTs with their respective owners. */
       200: {
         content: {
           "application/json": components["schemas"]["nftOwnerCollection"];
@@ -1516,7 +2864,7 @@ export interface operations {
       };
     };
   };
-  /** Gets the transfers of the tokens matching the given parameters */
+  /** Get the transfers of an NFT given a conttract address and token ID. */
   getWalletTokenIdTransfers: {
     parameters: {
       query: {
@@ -1524,12 +2872,12 @@ export interface operations {
         chain?: components["schemas"]["chainList"];
         /** The format of the token id */
         format?: "decimal" | "hex";
-        /** offset */
-        offset?: number;
-        /** limit */
+        /** The desired page size of the result. */
         limit?: number;
         /** The field(s) to order on and if it should be ordered in ascending or descending order. Specified by: fieldName1.order,fieldName2.order. Example 1: "block_number", "block_number.ASC", "block_number.DESC", Example 2: "block_number and contract_type", "block_number.ASC,contract_type.DESC" */
         order?: string;
+        /** The cursor returned in the previous response (used to getting the next page). */
+        cursor?: string;
       };
       path: {
         /** Address of the contract */
@@ -1547,7 +2895,7 @@ export interface operations {
       };
     };
   };
-  /** Resolves an Unstoppable domain and returns the address */
+  /** Resolve an Unstoppable domain and get the address. */
   resolveDomain: {
     parameters: {
       query: {
@@ -1566,9 +2914,32 @@ export interface operations {
           "application/json": components["schemas"]["resolve"];
         };
       };
+      /** Returns an address */
+      404: {
+        content: {
+          "application/json": { [key: string]: unknown };
+        };
+      };
     };
   };
-  /** Get the liquidity reserves for a given pair address */
+  /** Resolve an ETH address and find the ENS name. */
+  resolveAddress: {
+    parameters: {
+      path: {
+        /** The address to be resolved */
+        address: string;
+      };
+    };
+    responses: {
+      /** Returns an ENS */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ens"];
+        };
+      };
+    };
+  };
+  /** Get the liquidity reserves for a given pair address. Only Uniswap V2 based exchanges supported at the moment. */
   getPairReserves: {
     parameters: {
       query: {
@@ -1581,9 +2952,7 @@ export interface operations {
          * * Provide the param 'to_block' or 'to_date'
          * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
          */
-        to_date?: unknown;
-        /** web3 provider url to user when using local dev chain */
-        provider_url?: string;
+        to_date?: string;
       };
       path: {
         /** Liquidity pair address */
@@ -1594,13 +2963,13 @@ export interface operations {
       /** Returns the pair reserves */
       200: {
         content: {
-          "application/json": components["schemas"]["reservesCollection"];
+          "application/json": components["schemas"]["reservesPair"];
         };
       };
     };
   };
   /**
-   * Fetches and returns pair data of the provided token0+token1 combination.
+   * Fetch the pair data of the provided token0+token1 combination.
    * The token0 and token1 options are interchangable (ie. there is no different outcome in "token0=WETH and token1=USDT" or "token0=USDT and token1=WETH")
    */
   getPairAddress: {
@@ -1615,7 +2984,7 @@ export interface operations {
          * * Provide the param 'to_block' or 'to_date'
          * * If 'to_date' and 'to_block' are provided, 'to_block' will be used.
          */
-        to_date?: unknown;
+        to_date?: string;
         /** The factory name or address of the token exchange */
         exchange:
           | "uniswapv2"
@@ -1633,7 +3002,7 @@ export interface operations {
       };
     };
     responses: {
-      /** Returns the pair address of the two tokens */
+      /** Returns the pair address of the two tokens. */
       200: {
         content: {
           "application/json": components["schemas"]["reservesCollection"];
@@ -1641,7 +3010,7 @@ export interface operations {
       };
     };
   };
-  /** Uploads multiple files and place them in a folder directory */
+  /** Upload multiple files to IPFS and place them in a folder directory. */
   uploadFolder: {
     responses: {
       /** Returns the path to the uploaded files */
@@ -1655,6 +3024,26 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["ipfsFileRequest"][];
+      };
+    };
+  };
+  web3ApiVersion: {
+    responses: {
+      /** Get the current version of the Moralis Web3 API. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["web3version"];
+        };
+      };
+    };
+  };
+  endpointWeights: {
+    responses: {
+      /** Get the endpoint price list for rate limits and cost. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["endpointWeights"][];
+        };
       };
     };
   };
@@ -1677,32 +3066,44 @@ export default class Web3Api {
 
   static account: {
     getTransactions: (options: operations["getTransactions"]["parameters"]["query"] & operations["getTransactions"]["parameters"]["path"]) => Promise<operations["getTransactions"]["responses"]["200"]["content"]["application/json"]>;
+    getTransactionsVerbose: (options: operations["getTransactionsVerbose"]["parameters"]["query"] & operations["getTransactionsVerbose"]["parameters"]["path"]) => Promise<operations["getTransactionsVerbose"]["responses"]["200"]["content"]["application/json"]>;
     getNativeBalance: (options: operations["getNativeBalance"]["parameters"]["query"] & operations["getNativeBalance"]["parameters"]["path"]) => Promise<operations["getNativeBalance"]["responses"]["200"]["content"]["application/json"]>;
     getTokenBalances: (options: operations["getTokenBalances"]["parameters"]["query"] & operations["getTokenBalances"]["parameters"]["path"]) => Promise<operations["getTokenBalances"]["responses"]["200"]["content"]["application/json"]>;
     getTokenTransfers: (options: operations["getTokenTransfers"]["parameters"]["query"] & operations["getTokenTransfers"]["parameters"]["path"]) => Promise<operations["getTokenTransfers"]["responses"]["200"]["content"]["application/json"]>;
     getNFTs: (options: operations["getNFTs"]["parameters"]["query"] & operations["getNFTs"]["parameters"]["path"]) => Promise<operations["getNFTs"]["responses"]["200"]["content"]["application/json"]>;
     getNFTTransfers: (options: operations["getNFTTransfers"]["parameters"]["query"] & operations["getNFTTransfers"]["parameters"]["path"]) => Promise<operations["getNFTTransfers"]["responses"]["200"]["content"]["application/json"]>;
+    getWalletNFTCollections: (options: operations["getWalletNFTCollections"]["parameters"]["query"] & operations["getWalletNFTCollections"]["parameters"]["path"]) => Promise<operations["getWalletNFTCollections"]["responses"]["200"]["content"]["application/json"]>;
     getNFTsForContract: (options: operations["getNFTsForContract"]["parameters"]["query"] & operations["getNFTsForContract"]["parameters"]["path"]) => Promise<operations["getNFTsForContract"]["responses"]["200"]["content"]["application/json"]>;
   }
 
   static token: {
     getTokenMetadata: (options: operations["getTokenMetadata"]["parameters"]["query"] ) => Promise<operations["getTokenMetadata"]["responses"]["200"]["content"]["application/json"]>;
+    getNFTTrades: (options: operations["getNFTTrades"]["parameters"]["query"] & operations["getNFTTrades"]["parameters"]["path"]) => Promise<operations["getNFTTrades"]["responses"]["200"]["content"]["application/json"]>;
+    getNFTLowestPrice: (options: operations["getNFTLowestPrice"]["parameters"]["query"] & operations["getNFTLowestPrice"]["parameters"]["path"]) => Promise<operations["getNFTLowestPrice"]["responses"]["200"]["content"]["application/json"]>;
     getTokenMetadataBySymbol: (options: operations["getTokenMetadataBySymbol"]["parameters"]["query"] ) => Promise<operations["getTokenMetadataBySymbol"]["responses"]["200"]["content"]["application/json"]>;
     getTokenPrice: (options: operations["getTokenPrice"]["parameters"]["query"] & operations["getTokenPrice"]["parameters"]["path"]) => Promise<operations["getTokenPrice"]["responses"]["200"]["content"]["application/json"]>;
-    getTokenAdressTransfers: (options: operations["getTokenAdressTransfers"]["parameters"]["query"] & operations["getTokenAdressTransfers"]["parameters"]["path"]) => Promise<operations["getTokenAdressTransfers"]["responses"]["200"]["content"]["application/json"]>;
+    getTokenAddressTransfers: (options: operations["getTokenAddressTransfers"]["parameters"]["query"] & operations["getTokenAddressTransfers"]["parameters"]["path"]) => Promise<operations["getTokenAddressTransfers"]["responses"]["200"]["content"]["application/json"]>;
     getTokenAllowance: (options: operations["getTokenAllowance"]["parameters"]["query"] & operations["getTokenAllowance"]["parameters"]["path"]) => Promise<operations["getTokenAllowance"]["responses"]["200"]["content"]["application/json"]>;
     searchNFTs: (options: operations["searchNFTs"]["parameters"]["query"] ) => Promise<operations["searchNFTs"]["responses"]["200"]["content"]["application/json"]>;
+    getNftTransfersFromToBlock: (options: operations["getNftTransfersFromToBlock"]["parameters"]["query"] ) => Promise<operations["getNftTransfersFromToBlock"]["responses"]["200"]["content"]["application/json"]>;
     getAllTokenIds: (options: operations["getAllTokenIds"]["parameters"]["query"] & operations["getAllTokenIds"]["parameters"]["path"]) => Promise<operations["getAllTokenIds"]["responses"]["200"]["content"]["application/json"]>;
+    getMultipleNFTs: (options: operations["getMultipleNFTs"]["parameters"]["query"] ) => Promise<operations["getMultipleNFTs"]["responses"]["200"]["content"]["application/json"]>;
     getContractNFTTransfers: (options: operations["getContractNFTTransfers"]["parameters"]["query"] & operations["getContractNFTTransfers"]["parameters"]["path"]) => Promise<operations["getContractNFTTransfers"]["responses"]["200"]["content"]["application/json"]>;
     getNFTOwners: (options: operations["getNFTOwners"]["parameters"]["query"] & operations["getNFTOwners"]["parameters"]["path"]) => Promise<operations["getNFTOwners"]["responses"]["200"]["content"]["application/json"]>;
     getNFTMetadata: (options: operations["getNFTMetadata"]["parameters"]["query"] & operations["getNFTMetadata"]["parameters"]["path"]) => Promise<operations["getNFTMetadata"]["responses"]["200"]["content"]["application/json"]>;
+    reSyncMetadata: (options: operations["reSyncMetadata"]["parameters"]["query"] & operations["reSyncMetadata"]["parameters"]["path"]) => Promise<operations["reSyncMetadata"]["responses"]["200"]["content"]["application/json"]>;
     getTokenIdMetadata: (options: operations["getTokenIdMetadata"]["parameters"]["query"] & operations["getTokenIdMetadata"]["parameters"]["path"]) => Promise<operations["getTokenIdMetadata"]["responses"]["200"]["content"]["application/json"]>;
     getTokenIdOwners: (options: operations["getTokenIdOwners"]["parameters"]["query"] & operations["getTokenIdOwners"]["parameters"]["path"]) => Promise<operations["getTokenIdOwners"]["responses"]["200"]["content"]["application/json"]>;
     getWalletTokenIdTransfers: (options: operations["getWalletTokenIdTransfers"]["parameters"]["query"] & operations["getWalletTokenIdTransfers"]["parameters"]["path"]) => Promise<operations["getWalletTokenIdTransfers"]["responses"]["200"]["content"]["application/json"]>;
   }
 
+  static contract: {
+    syncNFTContract: (options: operations["syncNFTContract"]["parameters"]["query"] & operations["syncNFTContract"]["parameters"]["path"]) => Promise<operations["syncNFTContract"]["responses"]["200"]["content"]["application/json"]>;
+  }
+
   static resolve: {
     resolveDomain: (options: operations["resolveDomain"]["parameters"]["query"] & operations["resolveDomain"]["parameters"]["path"]) => Promise<operations["resolveDomain"]["responses"]["200"]["content"]["application/json"]>;
+    resolveAddress: () => Promise<operations["resolveAddress"]["responses"]["200"]["content"]["application/json"]>;
   }
 
   static defi: {
@@ -1712,6 +3113,11 @@ export default class Web3Api {
 
   static storage: {
     uploadFolder: () => Promise<operations["uploadFolder"]["responses"]["200"]["content"]["application/json"]>;
+  }
+
+  static info: {
+    web3ApiVersion: () => Promise<operations["web3ApiVersion"]["responses"]["200"]["content"]["application/json"]>;
+    endpointWeights: () => Promise<operations["endpointWeights"]["responses"]["200"]["content"]["application/json"]>;
   }
 
 }

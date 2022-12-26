@@ -328,7 +328,7 @@ class ParseObject {
     if (this.id) {
       path += `/${this.id}`;
     } else if (this.className === '_User') {
-      path = 'users';
+      path = 'graphql';
     }
     return {
       method,

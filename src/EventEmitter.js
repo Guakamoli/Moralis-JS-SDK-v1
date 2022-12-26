@@ -10,7 +10,8 @@
  */
 
 if (process.env.PARSE_BUILD === 'react-native') {
-  const EventEmitter = require('../../../react-native/Libraries/vendor/emitter/EventEmitter');
+  const EventEmitter = require('../../../react-native/Libraries/vendor/emitter/EventEmitter')
+    .default;
   EventEmitter.prototype.on = EventEmitter.prototype.addListener;
   module.exports = EventEmitter;
 } else {
